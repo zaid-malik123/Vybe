@@ -1,20 +1,55 @@
 import { useState } from "react";
+import axios from "axios";
 import Logo from "../assets/logo2.png";
 import Logo1 from "../assets/logo.png";
 import { LuEyeClosed, LuEye } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { serverUrl } from "../App";
 
 const Login = () => {
-  const navigate = useNavigate()  
+  const navigate = useNavigate();
+
+  // 🔹 Form state (two-way binding)
+  const [formData, setFormData] = useState({
+    userName: "",
+    password: "",
+  });
+
+  // 🔹 Focus state for label animation
   const [focused, setFocused] = useState({
     userName: false,
     password: false,
   });
+
+  // 🔹 Password visibility
   const [showPassword, setShowPassword] = useState(false);
+
+  // 🔹 Input handlers
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
   const handleFocus = (field) => setFocused({ ...focused, [field]: true });
   const handleBlur = (field, e) => {
     if (!e.target.value) setFocused({ ...focused, [field]: false });
+  };
+
+  // 🔹 Submit handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        `${serverUrl}/api/auth/login`,
+        formData,
+        { withCredentials: true }
+      );
+      console.log("Login Success:", res.data);
+      alert("Login successful!");
+      navigate("/"); // redirect to homepage/dashboard
+    } catch (err) {
+      console.error(err.response?.data?.message || err.message);
+      alert(err.response?.data?.message || "Login failed");
+    }
   };
 
   return (
@@ -40,6 +75,8 @@ const Login = () => {
             <input
               id="userName"
               type="text"
+              value={formData.userName}
+              onChange={handleChange}
               onFocus={() => handleFocus("userName")}
               onBlur={(e) => handleBlur("userName", e)}
               className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
@@ -59,6 +96,8 @@ const Login = () => {
             <input
               id="password"
               type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={handleChange}
               onFocus={() => handleFocus("password")}
               onBlur={(e) => handleBlur("password", e)}
               className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
@@ -71,14 +110,20 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Button */}
-          <button className="w-[70%] h-[50px] mt-[20px] bg-black text-white font-semibold rounded-2xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-md hover:shadow-xl">
+          {/* Submit Button */}
+          <button
+            onClick={handleSubmit}
+            className="w-[70%] h-[50px] mt-[20px] bg-black text-white font-semibold rounded-2xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-md hover:shadow-xl"
+          >
             Login
           </button>
 
           <p className="text-gray-700 text-[15px]">
             Don’t have an account?{" "}
-            <span onClick={()=> navigate("/signup")} className="text-black font-semibold border-b-2 border-black cursor-pointer">
+            <span
+              onClick={() => navigate("/signup")}
+              className="text-black font-semibold border-b-2 border-black cursor-pointer"
+            >
               Sign Up
             </span>
           </p>

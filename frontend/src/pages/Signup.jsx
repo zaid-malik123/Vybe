@@ -1,22 +1,59 @@
 import { useState } from "react";
+import axios from "axios";
 import Logo from "../assets/logo2.png";
 import Logo1 from "../assets/logo.png";
 import { LuEyeClosed, LuEye } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { serverUrl } from "../App";
 
 const Signup = () => {
-  const navigate = useNavigate()  
+  const navigate = useNavigate();
+
+  // 🔹 Form Data State (two-way binding)
+  const [formData, setFormData] = useState({
+    name: "",
+    userName: "",
+    email: "",
+    password: "",
+  });
+
+  // 🔹 Focused Label Animation
   const [focused, setFocused] = useState({
     name: false,
     userName: false,
     email: false,
     password: false,
   });
+
+  // 🔹 Password visibility toggle
   const [showPassword, setShowPassword] = useState(false);
+
+  // 🔹 Input Handlers
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
   const handleFocus = (field) => setFocused({ ...focused, [field]: true });
   const handleBlur = (field, e) => {
     if (!e.target.value) setFocused({ ...focused, [field]: false });
+  };
+
+  // 🔹 Submit Handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        `${serverUrl}/api/auth/signup`,
+        formData,
+        { withCredentials: true }
+      );
+      console.log("Signup Success:", res.data);
+      alert("Signup successful!");
+      navigate("/login");
+    } catch (err) {
+      console.error(err.response?.data?.message || err.message);
+      alert(err.response?.data?.message || "Signup failed");
+    }
   };
 
   return (
@@ -29,7 +66,7 @@ const Signup = () => {
             <img className="w-[80px]" src={Logo} alt="logo" />
           </div>
 
-          {/* Input Field Component */}
+          {/* Input Fields */}
           {[
             { id: "name", label: "Enter your Name", type: "text" },
             { id: "userName", label: "Enter your Username", type: "text" },
@@ -50,6 +87,8 @@ const Signup = () => {
               <input
                 id={item.id}
                 type={item.type}
+                value={formData[item.id]}
+                onChange={handleChange}
                 onFocus={() => handleFocus(item.id)}
                 onBlur={(e) => handleBlur(item.id, e)}
                 className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
@@ -57,7 +96,7 @@ const Signup = () => {
             </div>
           ))}
 
-          {/* Password */}
+          {/* Password Field */}
           <div className="relative flex items-center justify-start w-[85%] h-[55px] rounded-2xl border-2 border-gray-400 hover:border-black transition-all duration-300">
             <label
               htmlFor="password"
@@ -70,6 +109,8 @@ const Signup = () => {
             <input
               id="password"
               type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={handleChange}
               onFocus={() => handleFocus("password")}
               onBlur={(e) => handleBlur("password", e)}
               className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
@@ -82,14 +123,20 @@ const Signup = () => {
             </div>
           </div>
 
-          {/* Button */}
-          <button className="w-[70%] h-[50px] mt-[20px] bg-black text-white font-semibold rounded-2xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-md hover:shadow-xl">
+          {/* Submit Button */}
+          <button
+            onClick={handleSubmit}
+            className="w-[70%] h-[50px] mt-[20px] bg-black text-white font-semibold rounded-2xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-md hover:shadow-xl"
+          >
             Sign Up
           </button>
 
           <p className="text-gray-700 text-[15px]">
             Already have an account?{" "}
-            <span onClick={()=> navigate("/login")} className="text-black font-semibold border-b-2 border-black cursor-pointer">
+            <span
+              onClick={() => navigate("/login")}
+              className="text-black font-semibold border-b-2 border-black cursor-pointer"
+            >
               Login
             </span>
           </p>
@@ -99,7 +146,8 @@ const Signup = () => {
         <div className="hidden lg:flex w-[50%] h-full justify-center items-center bg-black flex-col gap-[15px] text-white text-[16px] font-semibold p-5">
           <img className="w-[50%]" src={Logo1} alt="vybe logo" />
           <p className="opacity-80 text-center">
-            VYBE — Not just a platform, it’s a <span className="text-yellow-400">Vybe</span>.
+            VYBE — Not just a platform, it’s a{" "}
+            <span className="text-yellow-400">Vybe</span>.
           </p>
         </div>
       </div>
