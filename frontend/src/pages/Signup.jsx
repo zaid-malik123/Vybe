@@ -9,7 +9,6 @@ import { serverUrl } from "../App";
 const Signup = () => {
   const navigate = useNavigate();
 
-  // 🔹 Form Data State (two-way binding)
   const [formData, setFormData] = useState({
     name: "",
     userName: "",
@@ -17,7 +16,6 @@ const Signup = () => {
     password: "",
   });
 
-  // 🔹 Focused Label Animation
   const [focused, setFocused] = useState({
     name: false,
     userName: false,
@@ -25,12 +23,18 @@ const Signup = () => {
     password: false,
   });
 
-  // 🔹 Password visibility toggle
+  const [errors, setErrors] = useState({
+    name: "",
+    userName: "",
+    email: "",
+    password: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
 
-  // 🔹 Input Handlers
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+    setErrors({ ...errors, [e.target.id]: "" }); // clear error on typing
   };
 
   const handleFocus = (field) => setFocused({ ...focused, [field]: true });
@@ -38,23 +42,66 @@ const Signup = () => {
     if (!e.target.value) setFocused({ ...focused, [field]: false });
   };
 
-  // 🔹 Submit Handler
+  const validate = () => {
+    const newErrors = {};
+    let valid = true;
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+      valid = false;
+    }
+    if (!formData.userName.trim()) {
+      newErrors.userName = "Username is required";
+      valid = false;
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else {
+      // Email format regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = "Enter a valid email address";
+        valid = false;
+      }
+    }
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validate()) return;
+
     try {
-      const res = await axios.post(
-        `${serverUrl}/api/auth/signup`,
-        formData,
-        { withCredentials: true }
-      );
+      const res = await axios.post(`${serverUrl}/api/auth/signup`, formData, {
+        withCredentials: true,
+      });
       console.log("Signup Success:", res.data);
-      alert("Signup successful!");
       navigate("/login");
     } catch (err) {
-      console.error(err.response?.data?.message || err.message);
-      alert(err.response?.data?.message || "Signup failed");
+      const message = err.response?.data?.message || "Signup failed";
+      if (message.toLowerCase().includes("user already registered")) {
+        setErrors((prev) => ({ ...prev, email: message }));
+      } else if (message.toLowerCase().includes("username already exist")) {
+        setErrors((prev) => ({ ...prev, userName: message }));
+      } else if (message.toLowerCase().includes("password")) {
+        setErrors((prev) => ({ ...prev, password: message }));
+      }
     }
   };
+
+  const inputFields = [
+    { id: "name", label: "Enter your Name", type: "text" },
+    { id: "userName", label: "Enter your Username", type: "text" },
+    { id: "email", label: "Enter your Email", type: "email" },
+  ];
 
   return (
     <div className="w-full h-screen bg-gradient-to-b from-black to-gray-900 flex flex-col justify-center items-center px-3">
@@ -66,64 +113,79 @@ const Signup = () => {
             <img className="w-[80px]" src={Logo} alt="logo" />
           </div>
 
-          {/* Input Fields */}
-          {[
-            { id: "name", label: "Enter your Name", type: "text" },
-            { id: "userName", label: "Enter your Username", type: "text" },
-            { id: "email", label: "Enter your Email", type: "email" },
-          ].map((item) => (
-            <div
-              key={item.id}
-              className="relative flex items-center justify-start w-[85%] h-[55px] rounded-2xl border-2 border-gray-400 hover:border-black transition-all duration-300"
-            >
-              <label
-                htmlFor={item.id}
-                className={`absolute left-[20px] px-[5px] bg-white text-[15px] text-gray-700 transition-all duration-300 ${
-                  focused[item.id] ? "top-[-12px] text-[13px]" : "top-[15px]"
+          {inputFields.map((item) => (
+            <div key={item.id} className="w-[85%] flex flex-col gap-1">
+              <div
+                className={`relative flex items-center justify-start h-[55px] rounded-2xl border-2 transition-all duration-300 ${
+                  errors[item.id]
+                    ? "border-red-500"
+                    : "border-gray-400 hover:border-black"
                 }`}
               >
-                {item.label}
-              </label>
-              <input
-                id={item.id}
-                type={item.type}
-                value={formData[item.id]}
-                onChange={handleChange}
-                onFocus={() => handleFocus(item.id)}
-                onBlur={(e) => handleBlur(item.id, e)}
-                className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
-              />
+                <label
+                  htmlFor={item.id}
+                  className={`absolute left-[20px] px-[5px] bg-white text-[15px] text-gray-700 transition-all duration-300 ${
+                    focused[item.id] ? "top-[-12px] text-[13px]" : "top-[15px]"
+                  }`}
+                >
+                  {item.label}
+                </label>
+                <input
+                  id={item.id}
+                  type={item.type}
+                  value={formData[item.id]}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus(item.id)}
+                  onBlur={(e) => handleBlur(item.id, e)}
+                  className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
+                />
+              </div>
+              {errors[item.id] && (
+                <p className="text-red-500 text-[13px] ml-2">
+                  {errors[item.id]}
+                </p>
+              )}
             </div>
           ))}
 
           {/* Password Field */}
-          <div className="relative flex items-center justify-start w-[85%] h-[55px] rounded-2xl border-2 border-gray-400 hover:border-black transition-all duration-300">
-            <label
-              htmlFor="password"
-              className={`absolute left-[20px] px-[5px] bg-white text-[15px] text-gray-700 transition-all duration-300 ${
-                focused.password ? "top-[-12px] text-[13px]" : "top-[15px]"
+          <div className="w-[85%] flex flex-col gap-1">
+            <div
+              className={`relative flex items-center justify-start h-[55px] rounded-2xl border-2 transition-all duration-300 ${
+                errors.password
+                  ? "border-red-500"
+                  : "border-gray-400 hover:border-black"
               }`}
             >
-              Enter your Password
-            </label>
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleChange}
-              onFocus={() => handleFocus("password")}
-              onBlur={(e) => handleBlur("password", e)}
-              className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
-            />
-            <div
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-[20px] text-gray-600 hover:text-black cursor-pointer transition-all duration-200"
-            >
-              {showPassword ? <LuEye size={20} /> : <LuEyeClosed size={20} />}
+              <label
+                htmlFor="password"
+                className={`absolute left-[20px] px-[5px] bg-white text-[15px] text-gray-700 transition-all duration-300 ${
+                  focused.password ? "top-[-12px] text-[13px]" : "top-[15px]"
+                }`}
+              >
+                Enter your Password
+              </label>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                onFocus={() => handleFocus("password")}
+                onBlur={(e) => handleBlur("password", e)}
+                className="w-full h-full rounded-2xl px-[20px] outline-none border-none text-[15px] bg-transparent"
+              />
+              <div
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-[20px] text-gray-600 hover:text-black cursor-pointer transition-all duration-200"
+              >
+                {showPassword ? <LuEye size={20} /> : <LuEyeClosed size={20} />}
+              </div>
             </div>
+            {errors.password && (
+              <p className="text-red-500 text-[13px] ml-2">{errors.password}</p>
+            )}
           </div>
 
-          {/* Submit Button */}
           <button
             onClick={handleSubmit}
             className="w-[70%] h-[50px] mt-[20px] bg-black text-white font-semibold rounded-2xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-md hover:shadow-xl"
