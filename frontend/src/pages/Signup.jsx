@@ -5,9 +5,13 @@ import Logo1 from "../assets/logo.png";
 import { LuEyeClosed, LuEye } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/slice/userSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [formData, setFormData] = useState({
     name: "",
@@ -83,8 +87,9 @@ const Signup = () => {
       const res = await axios.post(`${serverUrl}/api/auth/signup`, formData, {
         withCredentials: true,
       });
-      console.log("Signup Success:", res.data);
-      navigate("/login");
+      dispatch(setUser(res.data))
+      navigate("/");
+      toast.success("Signup Successfully")
     } catch (err) {
       const message = err.response?.data?.message || "Signup failed";
       if (message.toLowerCase().includes("user already registered")) {

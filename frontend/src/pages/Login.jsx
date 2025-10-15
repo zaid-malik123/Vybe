@@ -5,9 +5,13 @@ import Logo1 from "../assets/logo.png";
 import { LuEyeClosed, LuEye } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/slice/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [formData, setFormData] = useState({
     userName: "",
@@ -61,9 +65,9 @@ const Login = () => {
       const res = await axios.post(`${serverUrl}/api/auth/login`, formData, {
         withCredentials: true,
       });
-      console.log("Login Success:", res.data);
-      alert("Login successful!");
-      navigate("/"); // redirect to homepage/dashboard
+      dispatch(setUser(res.data))
+      navigate("/");
+      toast.success("Login Successfully") // redirect to homepage/dashboard
     } catch (err) {
       const message = err.response?.data?.message || "Login failed";
 
