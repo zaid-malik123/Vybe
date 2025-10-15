@@ -153,6 +153,9 @@ const Login = () => {
               <p className="text-red-500 text-[13px] ml-2">{errors.password}</p>
             )}
           </div>
+          <p onClick={()=> navigate("/forgot-password")} className="w-[85%] text-left px-[10px] text-sm text-gray-500 hover:text-black hover:underline cursor-pointer transition-all duration-200">
+            Forgot password?
+          </p>
 
           {/* Submit Button */}
           <button
