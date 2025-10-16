@@ -23,6 +23,13 @@ const userSchema = mongoose.Schema(
     profileImage: {
       type: String,
     },
+    bio: {
+      type: String,
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female"]
+    },
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
