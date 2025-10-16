@@ -115,7 +115,7 @@ export const suggestedUsers = async (req, res) => {
 
 export const editProfile = async (req, res) => {
   try {
-    const { name, userName, gender, profileImage, bio } = req.body;
+    const { name, userName, gender, profileImage, bio, profession } = req.body;
 
     const user = await User.findById(req.userId).select("-password");
     if (!user) {
@@ -137,6 +137,7 @@ export const editProfile = async (req, res) => {
     user.gender = gender || user.gender;
     user.userName = userName || user.userName;
     user.profileImage = img?.url || user.profileImage;
+    user.profession = profession || user.profession
 
     await user.save();
 

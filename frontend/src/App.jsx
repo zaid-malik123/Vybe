@@ -6,6 +6,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import getCurrentUser from "./hooks/getCurrentUser";
 import getSuggestedUser from "./hooks/getSuggestedUser";
+import Profile from "./pages/Profile";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -35,6 +36,10 @@ const App = () => {
       <Route
         path="/"
         element={user ? <Home /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/profile/:userName"
+        element={user ? <Profile/> : <Navigate to="/login" />}
       />
     </Routes>
   );

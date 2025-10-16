@@ -26,6 +26,9 @@ const userSchema = mongoose.Schema(
     bio: {
       type: String,
     },
+    profession: {
+      type: String
+    },
     gender: {
       type: String,
       enum: ["male", "female"]
