@@ -5,11 +5,13 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import getCurrentUser from "./hooks/getCurrentUser";
+import getSuggestedUser from "./hooks/getSuggestedUser";
 
 export const serverUrl = "http://localhost:3000";
 
 const App = () => {
   getCurrentUser();
+  getSuggestedUser()
 
   const { user } = useSelector((state) => state.userSlice);
 
