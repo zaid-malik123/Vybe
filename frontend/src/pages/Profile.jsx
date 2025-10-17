@@ -163,7 +163,7 @@ const Profile = () => {
 
       <div className="w-full h-[80px] flex justify-center items-center gap-[20px] mt-[10px]">
        {profileData?._id === user._id && (
-        <div>
+        <div onClick={()=> navigate("/edit-profile")}>
           <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">Edit Profile</button>
         </div>
        )}
