@@ -43,6 +43,7 @@ const EditProfile = () => {
       
       dispatch(setUser(res.data))
       dispatch(setProfileData(res.data))
+      navigate(`/profile/${user.userName}`)
       setLoading(false)
     } catch (error) {
       setLoading(false)  

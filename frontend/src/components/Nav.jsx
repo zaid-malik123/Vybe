@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Nav = () => {
- const {user} = useSelector(state => state.userSlice)  
+ const {user, profileData} = useSelector(state => state.userSlice)  
  const navigate = useNavigate()
   return (
     <div className="w-[90%] lg:w-[40%] h-[80px] bg-black flex justify-around items-center fixed bottom-[20px] rounded-full shadow-[#000000] shadow-2xl z-[100]">

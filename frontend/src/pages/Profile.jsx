@@ -63,25 +63,26 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="w-full h-[150px] flex items-start gap-[20px] lg:gap-[50px] pt-[20px] px-[10px] justify-center">
-        <div className="w-[90px] h-[90px] md:w-[140px] md:h-[140px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
+      <div className="w-full h-auto flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 pt-4 px-4 justify-center">
+        <div className="w-[90px] h-[90px] md:w-[140px] md:h-[140px] border-2 border-black rounded-full overflow-hidden">
           <img
-            className="w-full object-cover"
+            className="w-full h-full object-cover"
             src={profileData?.profileImage || dp}
             alt=""
           />
         </div>
 
-        <div>
+        <div className="flex flex-col text-center md:text-left">
           <div className="font-semibold text-[22px] text-white">
             {profileData?.name}
           </div>
           <div className="text-[17px] text-[#ffffffe8]">
             {profileData?.profession || "New User"}
           </div>
-          <div className="text-[17px] text-[#ffffffe8]">{profileData?.bio}</div>
+          <div className="text-[17px] text-[#ffffffe8] max-w-[300px] md:max-w-[500px] truncate md:truncate-3-lines">
+            {profileData?.bio}
+          </div>
         </div>
-
       </div>
 
       <div className="w-full h-[100px] flex items-center justify-center gap-[40px] md:gap-[60px] px-[20px] pt-[30px] text-white">
@@ -96,91 +97,96 @@ const Profile = () => {
         <div>
           <div className="flex items-center justify-center gap-[20px]">
             <div className="flex relative">
-           
-                <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
-                  <img
-                    className="w-full object-cover"
-                    src={user.profileImage || dp}
-                    alt=""
-                  />
-                </div>
-                 <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[9px]">
-                  <img
-                    className="w-full object-cover"
-                    src={user.profileImage || dp}
-                    alt=""
-                  />
-                </div>
-                 <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[18px]">
-                  <img
-                    className="w-full object-cover"
-                    src={user.profileImage || dp}
-                    alt=""
-                  />
-                </div>
-            
+              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
+                <img
+                  className="w-full object-cover"
+                  src={user.profileImage || dp}
+                  alt=""
+                />
+              </div>
+              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[9px]">
+                <img
+                  className="w-full object-cover"
+                  src={user.profileImage || dp}
+                  alt=""
+                />
+              </div>
+              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[18px]">
+                <img
+                  className="w-full object-cover"
+                  src={user.profileImage || dp}
+                  alt=""
+                />
+              </div>
             </div>
-            <div  className="text-white text-[22px] md:text-[30px] font-semibold">
+            <div className="text-white text-[22px] md:text-[30px] font-semibold">
               {profileData?.followers?.length}
             </div>
           </div>
-          <div className="text-[18px] md:text-[22px] text-[#ffffffc7]">Followers</div>
+          <div className="text-[18px] md:text-[22px] text-[#ffffffc7]">
+            Followers
+          </div>
         </div>
-        <div >
-           <div  className="flex items-center justify-center gap-[20px]">
+        <div>
+          <div className="flex items-center justify-center gap-[20px]">
             <div className="flex relative">
-           
-                <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
-                  <img
-                    className="w-full object-cover"
-                    src={user.profileImage || dp}
-                    alt=""
-                  />
-                </div>
-                 <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[9px]">
-                  <img
-                    className="w-full object-cover"
-                    src={user.profileImage || dp}
-                    alt=""
-                  />
-                </div>
-                 <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[18px]">
-                  <img
-                    className="w-full object-cover"
-                    src={user.profileImage || dp}
-                    alt=""
-                  />
-                </div>
-            
+              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
+                <img
+                  className="w-full object-cover"
+                  src={user.profileImage || dp}
+                  alt=""
+                />
+              </div>
+              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[9px]">
+                <img
+                  className="w-full object-cover"
+                  src={user.profileImage || dp}
+                  alt=""
+                />
+              </div>
+              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[18px]">
+                <img
+                  className="w-full object-cover"
+                  src={user.profileImage || dp}
+                  alt=""
+                />
+              </div>
             </div>
-            <div  className="text-white text-[22px] md:text-[30px] font-semibold">
+            <div className="text-white text-[22px] md:text-[30px] font-semibold">
               {profileData?.followers?.length}
             </div>
-           </div>
-          <div className="text-[18px] md:text-[22px] text-[#ffffffc7]">Following</div>
+          </div>
+          <div className="text-[18px] md:text-[22px] text-[#ffffffc7]">
+            Following
+          </div>
         </div>
       </div>
 
       <div className="w-full h-[80px] flex justify-center items-center gap-[20px] mt-[10px]">
-       {profileData?._id === user._id && (
-        <div onClick={()=> navigate("/edit-profile")}>
-          <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">Edit Profile</button>
-        </div>
-       )}
-       {profileData?._id != user._id && (
-        <div className="flex gap-[20px]">
-          <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">Follow</button>
-          <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">Message</button>
-        </div>
-       )}
+        {profileData?._id === user._id && (
+          <div onClick={() => navigate("/edit-profile")}>
+            <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">
+              Edit Profile
+            </button>
+          </div>
+        )}
+        {profileData?._id != user._id && (
+          <div className="flex gap-[20px]">
+            <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">
+              Follow
+            </button>
+            <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">
+              Message
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="w-full min-h-[100vh] flex justify-center">
         <div className="w-full max-w-[900px] flex flex-col items-center rounded-t-[30px] bg-white relative gap-[20px] pt-[30px]">
-          <Nav/>
+          <Nav />
         </div>
       </div>
-
     </div>
   );
 };
