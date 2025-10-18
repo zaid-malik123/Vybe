@@ -26,10 +26,16 @@ const postSchema = mongoose.Schema(
       },
     ],
     comments: [
-      {
+     {
+      author:  {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
+      comment: {
+        type: String, 
+        required: true
+      }
+     }
     ],
   },
   { timestamps: true }
