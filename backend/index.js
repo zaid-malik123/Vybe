@@ -10,6 +10,7 @@ import authRoute from "./src/routes/auth.routes.js"
 import userRoute from "./src/routes/user.routes.js"
 import postRoute from "./src/routes/post.routes.js"
 import reelRoute from "./src/routes/reels.routes.js"
+import storyRoute from "./src/routes/story.routes.js"
 
 const app = express();
 config();
@@ -28,6 +29,7 @@ app.use("/api/auth", authRoute)
 app.use("/api/user", userRoute)
 app.use("/api/post", postRoute)
 app.use("/api/reel", reelRoute)
+app.use("/api/story", storyRoute)
 
 const port = process.env.PORT || 5000
 
