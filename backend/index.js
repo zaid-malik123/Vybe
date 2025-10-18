@@ -9,6 +9,7 @@ import { connectDb } from "./src/db/db.js";
 import authRoute from "./src/routes/auth.routes.js"
 import userRoute from "./src/routes/user.routes.js"
 import postRoute from "./src/routes/post.routes.js"
+import reelRoute from "./src/routes/reels.routes.js"
 
 const app = express();
 config();
@@ -26,6 +27,7 @@ app.use(cors({
 app.use("/api/auth", authRoute)
 app.use("/api/user", userRoute)
 app.use("/api/post", postRoute)
+app.use("/api/reel", reelRoute)
 
 const port = process.env.PORT || 5000
 

@@ -7,7 +7,7 @@ export const currUser = async (req, res, next) => {
   try {
     const id = req.userId;
 
-    const user = await User.findById(id).select("-password").populate("posts")
+    const user = await User.findById(id).select("-password").populate("posts reels")
 
     if (!user) {
       return res.status(400).json({ message: "Unauthorized" });

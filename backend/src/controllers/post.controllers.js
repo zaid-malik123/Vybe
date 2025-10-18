@@ -16,7 +16,7 @@ export const uploadPost = async (req, res) => {
     const post = await Post.create({
       caption,
       mediaType,
-      media,
+      media: media.url,
       author: req.userId,
     });
 
@@ -34,7 +34,7 @@ export const uploadPost = async (req, res) => {
 
 export const getAllPost = async (req, res) => {
   try {
-    const post = await Post.find({ author: req.userId })
+    const post = await Post.find({})
       .populate("author")
       .sort({ createdAt: -1 });
 
@@ -80,13 +80,14 @@ export const likePost = async (req, res) => {
   }
 };
 
-export const commentPost = async () => {
+export const commentPost = async (req, res) => {
   try {
     const { comment } = req.body;
+    console.log(req.body.comment)
     const { postId } = req.params;
     const userId = req.userId;
 
-    if (!comment || comment.trim() != "") {
+    if (!comment || comment.trim() == "") {
       return res.status(400).json({ message: "comment is required" });
     }
 
