@@ -8,6 +8,7 @@ import getCurrentUser from "./hooks/getCurrentUser";
 import getSuggestedUser from "./hooks/getSuggestedUser";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import Upload from "./pages/Upload";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -45,6 +46,10 @@ const App = () => {
       <Route
         path="/edit-profile"
         element={user ? <EditProfile/> : <Navigate to="/login" />}
+      />
+       <Route
+        path="/upload"
+        element={user ? <Upload/> : <Navigate to="/login" />}
       />
     </Routes>
   );
