@@ -23,7 +23,7 @@ export const uploadPost = async (req, res) => {
     user.posts.push(post._id);
     await user.save();
 
-    const populatedPost = await Post.findById(post._id).populate("author");
+    const populatedPost = await Post.findById(post._id).populate("author")
 
     return res.status(201).json(populatedPost);
   } catch (error) {
@@ -82,7 +82,7 @@ export const likePost = async (req, res) => {
 export const commentPost = async (req, res) => {
   try {
     const { comment } = req.body;
-    console.log(req.body.comment)
+    console.log(req.body)
     const { postId } = req.params;
     const userId = req.userId;
 

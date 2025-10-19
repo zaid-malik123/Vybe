@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "../redux/slice/postSlice";
 import { setStory } from "../redux/slice/storySlice";
 import { setReel } from "../redux/slice/reelSlice";
+import Video from "../components/Video";
 
 
 const Upload = () => {
@@ -177,14 +178,7 @@ const Upload = () => {
               className="w-full max-h-[300px] object-contain rounded-2xl shadow-lg"
             />
           ) : (
-            <video
-              src={frontendMedia}
-              controls
-              autoPlay
-              loop
-              muted
-              className="w-full max-h-[300px] rounded-2xl shadow-lg"
-            ></video>
+            <Video src={frontendMedia}/>
           )}
 
           {uploadType != "story" && (

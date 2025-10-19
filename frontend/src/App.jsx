@@ -9,12 +9,14 @@ import getSuggestedUser from "./hooks/getSuggestedUser";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Upload from "./pages/Upload";
+import getAllPost from "./hooks/getAllPost";
 
 export const serverUrl = "http://localhost:3000";
 
 const App = () => {
   getCurrentUser();
   getSuggestedUser()
+  getAllPost()
 
   const { user } = useSelector((state) => state.userSlice);
 
