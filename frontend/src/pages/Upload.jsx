@@ -4,12 +4,24 @@ import { LuArrowLeft } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
+import { serverUrl } from "../App";
+import { useDispatch, useSelector } from "react-redux";
+import { setPost } from "../redux/slice/postSlice";
+import { setStory } from "../redux/slice/storySlice";
+import { setReel } from "../redux/slice/reelSlice";
+
 
 const Upload = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { post } = useSelector((state) => state.postSlice);
+  const { reel } = useSelector((state) => state.reelSlice);
+  const { story } = useSelector((state) => state.storySlice);
+
   const [uploadType, setUploadType] = useState("post");
   const [frontendMedia, setFrontendMedia] = useState(null);
   const [backendMedia, setBackendMedia] = useState(null);
+  const [loading, setLoading] = useState(false)
   const [mediaType, setMediaType] = useState();
   const [caption, setCaption] = useState("");
 
@@ -27,6 +39,75 @@ const Upload = () => {
       setFrontendMedia(URL.createObjectURL(file));
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const uploadPost = async () => { 
+    try {
+      const formData = new FormData();
+      formData.append("mediaType", mediaType);
+      formData.append("media", backendMedia);
+      formData.append("caption", caption);
+      const res = await axios.post(
+        `${serverUrl}/api/post/upload-post`,
+        formData,
+        { withCredentials: true }
+      );
+      dispatch(setPost([...post, res.data]));
+      navigate("/")
+      setLoading(false)
+    } catch (error) {
+       setLoading(false)
+      console.log(error);
+    }
+  };
+
+  const uploadStory = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("mediaType", mediaType);
+      formData.append("media", backendMedia);
+      const res = await axios.post(
+        `${serverUrl}/api/story/upload-story`,
+        formData,
+        { withCredentials: true }
+      );
+      dispatch(setStory([...story, res.data]));
+      navigate("/")
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      console.log(error);
+    }
+  };
+
+  const uploadReel = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("media", backendMedia);
+      formData.append("caption", caption);
+      const res = await axios.post(
+        `${serverUrl}/api/reel/upload-reel`,
+        formData,
+        { withCredentials: true }
+      );
+      dispatch(setReel([...reel, res.data]));
+      navigate("/")
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      console.log(error);
+    }
+  };
+
+  const handleUpload = () => {
+     setLoading(true)
+    if (uploadType == "post") {
+      uploadPost();
+    } else if (uploadType == "reel") {
+      uploadReel();
+    } else {
+      uploadStory();
     }
   };
 
@@ -106,15 +187,20 @@ const Upload = () => {
             ></video>
           )}
 
-          {uploadType != "story" && <textarea
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            placeholder="Write a caption..."
-            className="w-full min-h-[100px] bg-[#0d0f10] text-white text-[16px] rounded-xl p-3 border border-gray-700 outline-none resize-none focus:border-gray-400 transition-all"
-          ></textarea>}
+          {uploadType != "story" && (
+            <textarea
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="Write a caption..."
+              className="w-full min-h-[100px] bg-[#0d0f10] text-white text-[16px] rounded-xl p-3 border border-gray-700 outline-none resize-none focus:border-gray-400 transition-all"
+            ></textarea>
+          )}
 
-          <button className="w-full py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all mb-[20px]">
-            Upload {uploadType}
+          <button
+            onClick={handleUpload}
+            className="w-full py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all mb-[20px]"
+          >
+           {loading ? <ClipLoader size={30} color="black"/> :  `Upload ${uploadType}`}
           </button>
         </div>
       )}

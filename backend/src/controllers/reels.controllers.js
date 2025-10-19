@@ -2,27 +2,29 @@ import Reel from "../models/reels.model.js";
 import User from "../models/user.model.js";
 import { uploadImage } from "../service/imageKit.service.js";
 
-
 // Upload Reel
 export const uploadReel = async (req, res) => {
   try {
     const { caption } = req.body;
+    //   console.log("this is caption", caption)
+    // console.log("this is file", req.file)
 
     if (!req.file) {
       return res.status(400).json({ message: "File is required" });
     }
 
     const media = await uploadImage(req.file);
+    // console.log("This data is when vedio is uploaded on imagekit", media)
 
     const reel = await Reel.create({
       caption,
       media: media.url,
       author: req.userId,
     });
-
+    //  console.log("This data is created in data base --->", reel)
     // Add reel to user's Reels array
     const user = await User.findById(req.userId);
-    user.Reels.push(reel._id);
+    user.reels.push(reel._id);
     await user.save();
 
     const populatedReel = await Reel.findById(reel._id).populate("author");
@@ -102,11 +104,13 @@ export const commentReel = async (req, res) => {
   }
 };
 
-export const getAllReels = async (req, res)=>{
-    try {
-       const reel = await Reel.find({}).populate("author").populate("comments.author") 
-       return res.status(200).json(reel)
-    } catch (error) {
-        return res.status(500).json({ message: "Internal server error" }); 
-    }
-}
+export const getAllReels = async (req, res) => {
+  try {
+    const reel = await Reel.find({})
+      .populate("author")
+      .populate("comments.author");
+    return res.status(200).json(reel);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

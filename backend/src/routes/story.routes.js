@@ -7,7 +7,7 @@ const upload = multer({storage: multer.memoryStorage()});
 
 
 
-router.post("/create-story", upload.single("media"), isAuth, createStory )
+router.post("/upload-story", upload.single("media"), isAuth, createStory )
 
 router.get("/view-story/:storyId", isAuth, viewStory)
 

@@ -5,7 +5,6 @@ import { uploadImage } from "../service/imageKit.service.js";
 export const uploadPost = async (req, res) => {
   try {
     const { caption, mediaType } = req.body;
-
     let media;
     if (req.file) {
       media = await uploadImage(req.file);
