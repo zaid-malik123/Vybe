@@ -10,6 +10,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { setPosts } from "../redux/slice/postSlice";
 import { setUser } from "../redux/slice/userSlice";
+import FollowBtn from "./FollowBtn";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
@@ -95,9 +96,7 @@ const Post = ({ post }) => {
             <p className="text-[12px] text-gray-500">@{post.author.userName}</p>
           </div>
         </div>
-        <button className="px-4 py-1.5 bg-black text-white rounded-full text-[13px] md:text-[14px] hover:bg-gray-800 transition-all">
-          Follow
-        </button>
+       {post.author._id != user._id &&  <FollowBtn targetUserId={post.author._id} tailwind={`px-4 py-1.5 bg-black text-white rounded-full text-[13px] md:text-[14px] hover:bg-gray-800 transition-all`}/>}
       </div>
 
       {/* Media Section */}

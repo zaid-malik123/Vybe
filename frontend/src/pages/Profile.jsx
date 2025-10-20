@@ -7,13 +7,14 @@ import { useEffect } from "react";
 import { LuArrowLeft } from "react-icons/lu";
 import dp from "../assets/dp.webp";
 import Nav from "../components/Nav";
+import FollowBtn from "../components/FollowBtn";
 
 const Profile = () => {
   const { userName } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { profileData, user } = useSelector((state) => state.userSlice);
-
+  console.log(profileData);
   const handleProfile = async () => {
     try {
       const res = await axios.get(
@@ -28,7 +29,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      const res = axios.get(`${serverUrl}/api/auth/logout`, {
+      const res = await axios.get(`${serverUrl}/api/auth/logout`, {
         withCredentials: true,
       });
       dispatch(setUser(null));
@@ -97,27 +98,20 @@ const Profile = () => {
         <div>
           <div className="flex items-center justify-center gap-[20px]">
             <div className="flex relative">
-              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
-                <img
-                  className="w-full object-cover"
-                  src={user.profileImage || dp}
-                  alt=""
-                />
-              </div>
-              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[9px]">
-                <img
-                  className="w-full object-cover"
-                  src={user.profileImage || dp}
-                  alt=""
-                />
-              </div>
-              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[18px]">
-                <img
-                  className="w-full object-cover"
-                  src={user.profileImage || dp}
-                  alt=""
-                />
-              </div>
+              {profileData?.followers?.slice(0, 3).map((user, idx) => (
+                <div
+                  key={idx}
+                  className={`w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden ${
+                    idx > 0 ? `absolute left-[${idx * 9}]px` : ""
+                  } `}
+                >
+                  <img
+                    className="w-full object-cover"
+                    src={user.profileImage || dp}
+                    alt=""
+                  />
+                </div>
+              ))}
             </div>
             <div className="text-white text-[22px] md:text-[30px] font-semibold">
               {profileData?.followers?.length}
@@ -129,31 +123,24 @@ const Profile = () => {
         </div>
         <div>
           <div className="flex items-center justify-center gap-[20px]">
-            <div className="flex relative">
-              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
-                <img
-                  className="w-full object-cover"
-                  src={user.profileImage || dp}
-                  alt=""
-                />
-              </div>
-              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[9px]">
-                <img
-                  className="w-full object-cover"
-                  src={user.profileImage || dp}
-                  alt=""
-                />
-              </div>
-              <div className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden absolute left-[18px]">
-                <img
-                  className="w-full object-cover"
-                  src={user.profileImage || dp}
-                  alt=""
-                />
-              </div>
+          <div className="flex relative">
+              {profileData?.following?.slice(0, 3).map((user, idx) => (
+                <div
+                  key={idx}
+                  className={`w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden ${
+                    idx > 0 ? `absolute left-[${idx * 9}]px` : ""
+                  } `}
+                >
+                  <img
+                    className="w-full object-cover"
+                    src={user.profileImage || dp}
+                    alt=""
+                  />
+                </div>
+              ))}
             </div>
             <div className="text-white text-[22px] md:text-[30px] font-semibold">
-              {profileData?.followers?.length}
+              {profileData?.following?.length}
             </div>
           </div>
           <div className="text-[18px] md:text-[22px] text-[#ffffffc7]">
@@ -172,9 +159,12 @@ const Profile = () => {
         )}
         {profileData?._id != user._id && (
           <div className="flex gap-[20px]">
-            <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">
-              Follow
-            </button>
+            <FollowBtn
+              targetUserId={profileData?._id}
+              tailwind="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl"
+              onFollowChange={handleProfile} // ye line add kar
+            />
+
             <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white cursor-pointer rounded-2xl">
               Message
             </button>

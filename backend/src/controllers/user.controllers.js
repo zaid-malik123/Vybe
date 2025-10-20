@@ -157,6 +157,7 @@ try {
   }
   
  const user = await User.findOne({userName}).select("-password")
+ .populate("posts reels followers following")
  if(!user){
     return res.status(400).json({message: "userName does not exist"})
   }
@@ -195,7 +196,7 @@ export const followUser = async (req, res) => {
       await user.save();
       await targetUser.save();
 
-      return res.status(200).json({ message: "User unfollowed successfully" });
+      return res.status(200).json({message: "Unfollow", user})
     }
 
     // Follow
@@ -205,7 +206,7 @@ export const followUser = async (req, res) => {
     await user.save();
     await targetUser.save();
 
-    return res.status(200).json({ message: "Following successfully" });
+    return res.status(200).json({message: "Follow", user})
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }

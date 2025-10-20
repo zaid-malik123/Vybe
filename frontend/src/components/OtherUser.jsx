@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import dp from "../assets/dp.webp";
 import { useNavigate } from "react-router-dom";
+import FollowBtn from "./FollowBtn";
 
 const OtherUser = ({otherUser}) => {
  const {user} = useSelector(state => state.userSlice)  
@@ -25,7 +26,7 @@ const OtherUser = ({otherUser}) => {
           </div>
         </div>
       </div>
-       <button className="px-[10px] w-[100px] py-[5px] h-[40px] bg-[white] rounded-2xl">Follow</button>
+      <FollowBtn targetUserId={otherUser._id} tailwind={`px-[10px] w-[100px] py-[5px] h-[40px] bg-[white] rounded-2xl`}/>
     </div>
   );
 };
