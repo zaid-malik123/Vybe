@@ -35,6 +35,7 @@ export const getAllPost = async (req, res) => {
   try {
     const post = await Post.find({})
       .populate("author")
+      .populate("comments.author")
       .sort({ createdAt: -1 });
 
     return res.status(200).json(post);
@@ -102,7 +103,7 @@ export const commentPost = async (req, res) => {
     });
     await post.save();
     const updatedPost = await Post.findById(postId)
-      .populate("author")
+      .populate("author","profileImage userName name")
       .populate("comments.author");
     return res.status(201).json(updatedPost);
   } catch (error) {
@@ -126,7 +127,7 @@ export const savePost = async (req, res) => {
         return res.status(400).json({message: "User not found"})
     }
 
-    const isAlreadySaved = user.saved.includes(post._id)
+    const isAlreadySaved = user?.saved.some(id => id.toString() === post._id.toString())
     if(isAlreadySaved){
        user.saved.pull(post._id)
     }

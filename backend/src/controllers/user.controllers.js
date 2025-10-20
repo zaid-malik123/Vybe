@@ -167,3 +167,46 @@ try {
 }
 }
 
+export const followUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const {targetUserId} = req.params;
+
+    if (!targetUserId) {
+      return res.status(400).json({ message: "Targeted User not found" });
+    }
+
+    if (userId === targetUserId) {
+      return res.status(400).json({ message: "Do not follow yourself" });
+    }
+
+    const user = await User.findById(userId);
+    const targetUser = await User.findById(targetUserId);
+
+    if (!user || !targetUser) {
+      return res.status(404).json({ message: "User or targeted user not found" });
+    }
+
+    // Unfollow
+    if (user.following.includes(targetUser._id)) {
+      user.following = user.following.filter(u => u.toString() !== targetUser._id.toString());
+      targetUser.followers = targetUser.followers.filter(u => u.toString() !== user._id.toString());
+
+      await user.save();
+      await targetUser.save();
+
+      return res.status(200).json({ message: "User unfollowed successfully" });
+    }
+
+    // Follow
+    user.following.push(targetUser._id);
+    targetUser.followers.push(user._id);
+
+    await user.save();
+    await targetUser.save();
+
+    return res.status(200).json({ message: "Following successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};

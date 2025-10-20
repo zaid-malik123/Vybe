@@ -3,7 +3,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/slice/userSlice";
-import { setPost } from "../redux/slice/postSlice";
+import { setPosts } from "../redux/slice/postSlice";
 
 const getAllPost = () => {
   const dispatch = useDispatch()
@@ -14,7 +14,7 @@ const getAllPost = () => {
         const res = await axios.get(`${serverUrl}/api/post/all-post`, {
           withCredentials: true,
         });
-       dispatch(setPost(res.data))
+       dispatch(setPosts(res.data))
       } catch (error) {
         console.log(error);
       }

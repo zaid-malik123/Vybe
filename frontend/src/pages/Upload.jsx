@@ -6,7 +6,7 @@ import { useState, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
-import { setPost } from "../redux/slice/postSlice";
+import { setPosts } from "../redux/slice/postSlice";
 import { setStory } from "../redux/slice/storySlice";
 import { setReel } from "../redux/slice/reelSlice";
 import Video from "../components/Video";
@@ -15,7 +15,7 @@ import Video from "../components/Video";
 const Upload = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { post } = useSelector((state) => state.postSlice);
+  const { posts } = useSelector((state) => state.postSlice);
   const { reel } = useSelector((state) => state.reelSlice);
   const { story } = useSelector((state) => state.storySlice);
 
@@ -54,7 +54,7 @@ const Upload = () => {
         formData,
         { withCredentials: true }
       );
-      dispatch(setPost([...post, res.data]));
+      dispatch(setPosts([...posts, res.data]));
       navigate("/")
       setLoading(false)
     } catch (error) {

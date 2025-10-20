@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import dp from "../assets/dp.webp";
 import Video from "./Video";
 import { GoHeart, GoHeartFill } from "react-icons/go";
@@ -8,30 +8,72 @@ import { IoMdSend } from "react-icons/io";
 import { useState } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
+import { setPosts } from "../redux/slice/postSlice";
+import { setUser } from "../redux/slice/userSlice";
 
 const Post = ({ post }) => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.userSlice);
+  const { posts } = useSelector((state) => state.postSlice);
+
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState("");
 
-  const handleLike = async ()=>{
+  // ✅ Check if current user liked this post
+  const isLiked = post.likes.some(
+    (like) => like._id?.toString() === user._id.toString() || like.toString() === user._id.toString()
+  );
+
+  // ✅ Check if current user saved this post
+  const isSaved = user?.saved.some(
+    (saved) => saved._id?.toString() === post._id.toString() || saved.toString() === post._id.toString()
+  );
+
+  const handleLike = async () => {
     try {
-        const res = await axios.get(`${serverUrl}/api/post/like-post/${post._id}`,{withCredentials:true})
-        console.log(res.data)
+      const res = await axios.get(
+        `${serverUrl}/api/post/like-post/${post._id}`,
+        { withCredentials: true }
+      );
+      const updatedPost = res.data;
+      const updatedPosts = posts.map((p) =>
+        p._id.toString() === post._id.toString() ? updatedPost : p
+      );
+      dispatch(setPosts(updatedPosts));
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleSendComment = async () => {
     if (!comment.trim()) return;
     try {
-        const res = await axios.post(`${serverUrl}/api/post/comment-post/${post._id}`,{comment},{withCredentials:true})
-        console.log(res.data)
+      const res = await axios.post(
+        `${serverUrl}/api/post/comment-post/${post._id}`,
+        { comment },
+        { withCredentials: true }
+      );
+      const updatedPost = res.data;
+      const updatedPosts = posts.map((p) =>
+        p._id.toString() === post._id.toString() ? updatedPost : p
+      );
+      dispatch(setPosts(updatedPosts));
+      setComment("");
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-    
+  };
+
+  const handleSaved = async () => {
+    try {
+      const res = await axios.get(
+        `${serverUrl}/api/post/save-post/${post._id}`,
+        { withCredentials: true }
+      );
+      dispatch(setUser(res.data));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -53,7 +95,6 @@ const Post = ({ post }) => {
             <p className="text-[12px] text-gray-500">@{post.author.userName}</p>
           </div>
         </div>
-
         <button className="px-4 py-1.5 bg-black text-white rounded-full text-[13px] md:text-[14px] hover:bg-gray-800 transition-all">
           Follow
         </button>
@@ -61,17 +102,14 @@ const Post = ({ post }) => {
 
       {/* Media Section */}
       <div className="w-full bg-[#f9f9f9] flex items-center justify-center">
-        {post.mediaType === "image" && (
+        {post.mediaType === "image" ? (
           <img
             className="w-full object-cover max-h-[500px] md:rounded-none"
             src={post.media}
             alt=""
           />
-        )}
-        {post.mediaType === "video" && (
-          <div className="w-full flex justify-center">
-            <Video src={post.media} />
-          </div>
+        ) : (
+          <Video src={post.media} />
         )}
       </div>
 
@@ -80,7 +118,7 @@ const Post = ({ post }) => {
         <div className="flex items-center gap-5">
           {/* Like */}
           <div className="flex items-center gap-2 cursor-pointer hover:opacity-70">
-            {post.likes.includes(user._id) ? (
+            {isLiked ? (
               <GoHeartFill onClick={handleLike} size={25} color="red" />
             ) : (
               <GoHeart onClick={handleLike} size={25} />
@@ -99,16 +137,12 @@ const Post = ({ post }) => {
         </div>
 
         {/* Save */}
-        <div className="cursor-pointer hover:opacity-70">
-          {user?.saved.includes(post._id) ? (
-            <FaBookmark size={25} />
-          ) : (
-            <FaRegBookmark size={25} />
-          )}
+        <div onClick={handleSaved} className="cursor-pointer hover:opacity-70">
+          {isSaved ? <FaBookmark size={25} /> : <FaRegBookmark size={25} />}
         </div>
       </div>
 
-      {/* Caption Section */}
+      {/* Caption */}
       {post.caption && (
         <div className="w-full px-5 pb-3">
           <p className="text-[14px]">
@@ -127,15 +161,15 @@ const Post = ({ post }) => {
               post.comments.map((cmt, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <img
-                    src={cmt.user?.profileImage || dp}
+                    src={cmt.author?.profileImage || dp}
                     alt=""
                     className="w-[35px] h-[35px] rounded-full object-cover border border-gray-200"
                   />
                   <div className="bg-white shadow-sm border border-gray-200 px-4 py-2 rounded-2xl text-[14px] leading-snug">
                     <span className="font-semibold mr-2">
-                      {cmt.user?.userName || "User"}
+                      {cmt.author?.userName || "User"}
                     </span>
-                    {cmt.text}
+                    {cmt.comment}
                   </div>
                 </div>
               ))
@@ -146,7 +180,7 @@ const Post = ({ post }) => {
             )}
           </div>
 
-          {/* Comment input */}
+          {/* Comment Input */}
           <div className="flex items-center gap-3 mt-2 bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm">
             <img
               src={user?.profileImage || dp}
