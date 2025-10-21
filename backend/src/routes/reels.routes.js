@@ -7,7 +7,7 @@ const upload = multer({storage: multer.memoryStorage()});
 
 router.post("/upload-reel", upload.single("media"),isAuth, uploadReel)
 router.get("/like-reel/:reelId", isAuth, likeReel )
-router.get("/comment-reel/:reelId", isAuth, commentReel)
+router.post("/comment-reel/:reelId", isAuth, commentReel)
 router.get("/all-reels", isAuth, getAllReels)
 
 

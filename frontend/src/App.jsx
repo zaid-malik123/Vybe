@@ -10,6 +10,8 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Upload from "./pages/Upload";
 import getAllPost from "./hooks/getAllPost";
+import Reels from "./pages/Reels";
+import getAllReel from "./hooks/getAllReels";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -17,6 +19,7 @@ const App = () => {
   getCurrentUser();
   getSuggestedUser()
   getAllPost()
+  getAllReel()
 
   const { user } = useSelector((state) => state.userSlice);
 
@@ -52,6 +55,10 @@ const App = () => {
        <Route
         path="/upload"
         element={user ? <Upload/> : <Navigate to="/login" />}
+      />
+       <Route
+        path="/reels"
+        element={user ? <Reels/> : <Navigate to="/login" />}
       />
     </Routes>
   );

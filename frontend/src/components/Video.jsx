@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaVolumeMute, FaVolumeUp, FaPlay, FaPause } from "react-icons/fa";
 
 const Video = ({ src }) => {
@@ -26,6 +26,31 @@ const Video = ({ src }) => {
     video.muted = !isMuted;
     setIsMuted(!isMuted);
   };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (entry.isIntersecting) {
+          video.play();
+          setIsPlaying(true);
+        } else {
+          video.pause();
+          setIsPlaying(false);
+        }
+      },
+      { threshold: 0.6 }
+    );
+
+    const video = videoRef.current;
+    if (video) observer.observe(video);
+
+    return () => {
+      if (video) observer.unobserve(video);
+    };
+  }, []);
 
   return (
     <div className="relative w-full max-h-[300px] rounded-2xl overflow-hidden shadow-lg group">

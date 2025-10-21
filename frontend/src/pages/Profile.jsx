@@ -160,7 +160,7 @@ const Profile = () => {
       </div>
 
       {/* 🔹 Posts / Saved toggle */}
-      {profileData._id == user._id && (
+      {profileData?._id == user?._id && (
         <div className="w-full flex justify-center mt-[20px] mb-[10px]">
           <div className="w-[90%] max-w-[600px] h-[70px] bg-white/10 rounded-full flex justify-around items-center gap-[10px] backdrop-blur-sm border border-gray-800">
             {["post", "save"].map((type) => (

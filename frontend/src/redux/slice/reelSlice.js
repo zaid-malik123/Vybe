@@ -1,19 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-   reel: []
+   reels: []
 }
 
 export const reelSlice = createSlice({
-  name: 'reel',
+  name: 'reels',
   initialState,
   reducers: {
-    setReel: (state, action)=>{
-        state.reel = action.payload
+    setReels: (state, action)=>{
+        state.reels = action.payload
     }
   },
 })
 
-export const { setReel } = reelSlice.actions
+export const { setReels } = reelSlice.actions
 
 export default reelSlice.reducer

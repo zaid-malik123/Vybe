@@ -8,29 +8,32 @@ import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../redux/slice/postSlice";
 import { setStory } from "../redux/slice/storySlice";
-import { setReel } from "../redux/slice/reelSlice";
+import { setReels } from "../redux/slice/reelSlice";
 import Video from "../components/Video";
-
 
 const Upload = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { posts } = useSelector((state) => state.postSlice);
-  const { reel } = useSelector((state) => state.reelSlice);
+  const { reels } = useSelector((state) => state.reelSlice);
   const { story } = useSelector((state) => state.storySlice);
 
   const [uploadType, setUploadType] = useState("post");
   const [frontendMedia, setFrontendMedia] = useState(null);
   const [backendMedia, setBackendMedia] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [mediaType, setMediaType] = useState();
   const [caption, setCaption] = useState("");
 
   const mediaInput = useRef();
 
+  // 🖼 Handle selected file
   const handleMedia = async (e) => {
     try {
       const file = e.target.files[0];
+      if (!file) return;
+
       if (file.type.includes("image")) {
         setMediaType("image");
       } else {
@@ -43,93 +46,96 @@ const Upload = () => {
     }
   };
 
-  const uploadPost = async () => { 
+  // 📤 Upload Post
+  const uploadPost = async () => {
     try {
       const formData = new FormData();
       formData.append("mediaType", mediaType);
       formData.append("media", backendMedia);
       formData.append("caption", caption);
-      const res = await axios.post(
-        `${serverUrl}/api/post/upload-post`,
-        formData,
-        { withCredentials: true }
-      );
+
+      const res = await axios.post(`${serverUrl}/api/post/upload-post`, formData, {
+        withCredentials: true,
+      });
+
       dispatch(setPosts([...posts, res.data]));
-      navigate("/")
-      setLoading(false)
+      navigate("/");
+      setLoading(false);
     } catch (error) {
-       setLoading(false)
+      setLoading(false);
       console.log(error);
     }
   };
 
+  // 📤 Upload Story
   const uploadStory = async () => {
     try {
       const formData = new FormData();
       formData.append("mediaType", mediaType);
       formData.append("media", backendMedia);
-      const res = await axios.post(
-        `${serverUrl}/api/story/upload-story`,
-        formData,
-        { withCredentials: true }
-      );
+
+      const res = await axios.post(`${serverUrl}/api/story/upload-story`, formData, {
+        withCredentials: true,
+      });
+
       dispatch(setStory([...story, res.data]));
-      navigate("/")
-      setLoading(false)
+      navigate("/");
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.log(error);
     }
   };
 
+  // 📤 Upload Reel
   const uploadReel = async () => {
     try {
       const formData = new FormData();
       formData.append("media", backendMedia);
       formData.append("caption", caption);
-      const res = await axios.post(
-        `${serverUrl}/api/reel/upload-reel`,
-        formData,
-        { withCredentials: true }
-      );
-      dispatch(setReel([...reel, res.data]));
-      navigate("/")
-      setLoading(false)
+
+      const res = await axios.post(`${serverUrl}/api/reel/upload-reel`, formData, {
+        withCredentials: true,
+      });
+
+      // ✅ Fixed here → was using `reel` instead of `reels`
+      dispatch(setReels([...reels, res.data]));
+      navigate("/");
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.log(error);
     }
   };
 
+  // 🚀 Handle Upload Type
   const handleUpload = () => {
-     setLoading(true)
-    if (uploadType == "post") {
-      uploadPost();
-    } else if (uploadType == "reel") {
-      uploadReel();
-    } else {
-      uploadStory();
-    }
+    if (!backendMedia) return alert("Please select media first.");
+    setLoading(true);
+
+    if (uploadType === "post") uploadPost();
+    else if (uploadType === "reel") uploadReel();
+    else uploadStory();
   };
 
   return (
-    <div className="w-full min-h-[100vh] bg-black flex flex-col items-center">
-      {/* Top Bar */}
-      <div className="w-full max-w-[600px] flex items-center justify-between py-6 border-b border-gray-800 px-[10px]">
+    <div className="w-full min-h-screen bg-black flex flex-col items-center">
+      {/* 🔹 Top Bar */}
+      <div className="w-full max-w-[600px] flex items-center justify-between py-6 border-b border-gray-800 px-4">
         <button
-          onClick={() => navigate(`/`)}
+          onClick={() => navigate("/")}
           className="flex items-center gap-2 text-gray-300 hover:text-white transition-all"
         >
           <LuArrowLeft size={22} />
           <span className="font-medium">Back</span>
         </button>
-        <h2 className="text-lg font-semibold text-center flex-1 text-white">
+        <h2 className="text-lg font-semibold text-white text-center flex-1">
           Upload Media
         </h2>
-        <div className="w-[60px]"></div>
+        <div className="w-[60px]" />
       </div>
 
-      {/* Upload Type Switch */}
+      {/* 🔹 Upload Type Tabs */}
       <div className="w-[90%] max-w-[600px] h-[70px] bg-white/10 rounded-full flex justify-around items-center gap-[10px] mt-[25px] backdrop-blur-sm border border-gray-800">
         {["post", "story", "reel"].map((type) => (
           <div
@@ -154,7 +160,7 @@ const Upload = () => {
         accept="image/*,video/*"
       />
 
-      {/* Upload Box */}
+      {/* 🔹 Upload Box */}
       {!frontendMedia && (
         <div
           onClick={() => mediaInput.current.click()}
@@ -168,7 +174,7 @@ const Upload = () => {
         </div>
       )}
 
-      {/* Media Preview */}
+      {/* 🔹 Media Preview */}
       {frontendMedia && (
         <div className="w-[85%] max-w-[500px] mt-[8vh] flex flex-col items-center gap-4">
           {mediaType === "image" ? (
@@ -178,10 +184,10 @@ const Upload = () => {
               className="w-full max-h-[300px] object-contain rounded-2xl shadow-lg"
             />
           ) : (
-            <Video src={frontendMedia}/>
+            <Video src={frontendMedia} />
           )}
 
-          {uploadType != "story" && (
+          {uploadType !== "story" && (
             <textarea
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
@@ -194,7 +200,11 @@ const Upload = () => {
             onClick={handleUpload}
             className="w-full py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-all mb-[20px]"
           >
-           {loading ? <ClipLoader size={30} color="black"/> :  `Upload ${uploadType}`}
+            {loading ? (
+              <ClipLoader size={30} color="black" />
+            ) : (
+              `Upload ${uploadType}`
+            )}
           </button>
         </div>
       )}

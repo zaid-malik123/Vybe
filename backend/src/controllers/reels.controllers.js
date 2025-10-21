@@ -73,6 +73,7 @@ export const likeReel = async (req, res) => {
 export const commentReel = async (req, res) => {
   try {
     const { comment } = req.body;
+    console.log(comment)
     const { reelId } = req.params;
     const userId = req.userId;
 

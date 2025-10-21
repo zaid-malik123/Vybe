@@ -11,7 +11,7 @@ const Nav = () => {
  const navigate = useNavigate()
   return (
     <div className="w-[90%] lg:w-[40%] h-[80px] bg-black flex justify-around items-center fixed bottom-[20px] rounded-full shadow-[#000000] shadow-2xl z-[100]">
-      <div className="cursor-pointer">
+      <div onClick={()=> navigate("/")} className="cursor-pointer">
         <MdHomeFilled color="white" size={25} />
       </div>
       <div className="cursor-pointer">
@@ -20,7 +20,7 @@ const Nav = () => {
       <div onClick={()=> navigate("/upload")} className="cursor-pointer">
         <FaPlus color="white" size={25} />
       </div>
-      <div className="cursor-pointer">
+      <div onClick={()=> navigate("/reels")} className="cursor-pointer">
         <BiSolidVideos color="white" size={25} />
       </div>
       <div onClick={()=> navigate(`/profile/${user.userName}`)} className="w-[40px] h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden">
