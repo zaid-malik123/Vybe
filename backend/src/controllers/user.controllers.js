@@ -7,7 +7,20 @@ export const currUser = async (req, res, next) => {
   try {
     const id = req.userId;
 
-    const user = await User.findById(id).select("-password").populate("posts reels")
+    const user = await User.findById(id)
+      .select("-password")
+      .populate({
+        path: "posts",
+        populate: [
+          { path: "author", select: "name userName profileImage" },
+          { path: "comments.author", select: "name userName profileImage" },
+        ],
+      })
+      .populate({
+        path: "saved",
+        populate: { path: "author", select: "name userName profileImage" },
+      })
+      .populate("reels");
 
     if (!user) {
       return res.status(400).json({ message: "Unauthorized" });
@@ -137,41 +150,67 @@ export const editProfile = async (req, res) => {
     user.gender = gender || user.gender;
     user.userName = userName || user.userName;
     user.profileImage = img?.url || user.profileImage;
-    user.profession = profession || user.profession
+    user.profession = profession || user.profession;
 
     await user.save();
 
     return res.status(200).json(user);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
 export const getUserProfile = async (req, res) => {
-try {
-  const { userName } = req.params;
-  
-  if(!userName){
-    return res.status(400).json({message: "userName must be valid"})
-  }
-  
- const user = await User.findOne({userName}).select("-password")
- .populate("posts reels followers following")
- if(!user){
-    return res.status(400).json({message: "userName does not exist"})
-  }
+  try {
+    const { userName } = req.params;
 
-  return res.status(200).json(user)
-} catch (error) {
-  console.log(error)
-}
-}
+    if (!userName) {
+      return res.status(400).json({ message: "userName must be valid" });
+    }
+
+    const user = await User.findOne({ userName })
+      .select("-password")
+      .populate([
+        {
+          path: "posts",
+          populate: [
+            { path: "author", select: "name userName profileImage" },
+            { path: "comments.author", select: "name userName profileImage" },
+          ],
+        },
+        {
+          path: "saved",
+          populate: [
+            { path: "author", select: "name userName profileImage" },
+            { path: "comments.author", select: "name userName profileImage" },
+          ],
+        },
+        {
+          path: "reels",
+          populate: { path: "author", select: "name userName profileImage" },
+        },
+        { path: "followers", select: "name userName profileImage" },
+        { path: "following", select: "name userName profileImage" },
+      ]);
+
+    if (!user) {
+      return res.status(400).json({ message: "userName does not exist" });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
 
 export const followUser = async (req, res) => {
   try {
     const userId = req.userId;
-    const {targetUserId} = req.params;
+    const { targetUserId } = req.params;
 
     if (!targetUserId) {
       return res.status(400).json({ message: "Targeted User not found" });
@@ -185,18 +224,24 @@ export const followUser = async (req, res) => {
     const targetUser = await User.findById(targetUserId);
 
     if (!user || !targetUser) {
-      return res.status(404).json({ message: "User or targeted user not found" });
+      return res
+        .status(404)
+        .json({ message: "User or targeted user not found" });
     }
 
     // Unfollow
     if (user.following.includes(targetUser._id)) {
-      user.following = user.following.filter(u => u.toString() !== targetUser._id.toString());
-      targetUser.followers = targetUser.followers.filter(u => u.toString() !== user._id.toString());
+      user.following = user.following.filter(
+        (u) => u.toString() !== targetUser._id.toString()
+      );
+      targetUser.followers = targetUser.followers.filter(
+        (u) => u.toString() !== user._id.toString()
+      );
 
       await user.save();
       await targetUser.save();
 
-      return res.status(200).json({message: "Unfollow", user})
+      return res.status(200).json({ message: "Unfollow", user });
     }
 
     // Follow
@@ -206,7 +251,7 @@ export const followUser = async (req, res) => {
     await user.save();
     await targetUser.save();
 
-    return res.status(200).json({message: "Follow", user})
+    return res.status(200).json({ message: "Follow", user });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }

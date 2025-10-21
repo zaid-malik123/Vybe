@@ -14,7 +14,6 @@ const FollowBtn = ({ targetUserId, tailwind, onFollowChange }) => {
         `${serverUrl}/api/user/follow-user/${targetUserId}`,
         { withCredentials: true }
       );
-      console.log(res.data)
       dispatch(toogleFollow(targetUserId));
 
       // optional: parent ko notify karo taaki UI refresh ho jaaye
