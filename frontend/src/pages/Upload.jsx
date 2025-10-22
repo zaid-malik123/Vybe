@@ -10,6 +10,7 @@ import { setPosts } from "../redux/slice/postSlice";
 import { setStory } from "../redux/slice/storySlice";
 import { setReels } from "../redux/slice/reelSlice";
 import Video from "../components/Video";
+import { setUser } from "../redux/slice/userSlice";
 
 const Upload = () => {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const Upload = () => {
         withCredentials: true,
       });
 
-      dispatch(setStory([...story, res.data]));
+      setUser(prev => ({ ...prev, story: res.data }))
       navigate("/");
       setLoading(false);
     } catch (error) {

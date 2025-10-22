@@ -2,26 +2,25 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../redux/slice/userSlice";
-import { setReels } from "../redux/slice/reelSlice";
+import { setStoryList } from "../redux/slice/storySlice";
 
-
-const getAllReel = () => {
+const getAllStory = () => {
   const dispatch = useDispatch()
   const {user} = useSelector(state => state.userSlice)  
   useEffect(() => {
-    const fetchReel = async () => {
+    const fetchStory = async () => {
       try {
-        const res = await axios.get(`${serverUrl}/api/reel/all-reels`, {
+        const res = await axios.get(`${serverUrl}/api/story/all-story`, {
           withCredentials: true,
         });
-        dispatch(setReels(res.data))
+        dispatch(setStoryList(res.data))
+        
       } catch (error) {
         console.log(error);
       }
     };
-    fetchReel()
+    fetchStory()
   }, [dispatch, user]);
 };
 
-export default getAllReel;
+export default getAllStory;

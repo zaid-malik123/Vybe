@@ -77,7 +77,7 @@ export const getStoryByUsername = async (req, res)=>{
             return res.status(400).json({message: "User not found"})
         }
         
-        const story = await Story.findOne({author: user._id})
+        const story = await Story.findOne({author: user._id}).populate("author")
         if(!story){
              return res.status(400).json({message: "Story not found"})
         }
@@ -85,5 +85,25 @@ export const getStoryByUsername = async (req, res)=>{
 
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const getAllStory = async (req, res)=>{
+    try {
+      const currUser = req.userId  
+      const user = await User.findById(currUser)
+      if(!user){
+        return res.status(400).json("User not found")
+      }
+
+      const followingIds = user.following
+      const stories = await Story.find({author: {$in : followingIds}})
+      .populate("viewers author")
+      .sort({createdAt: -1})
+     
+      res.status(200).json(stories)
+
+    } catch (error) {
+        console.log(error)
     }
 }

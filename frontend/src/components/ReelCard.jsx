@@ -226,12 +226,7 @@ const ReelCard = ({ reel }) => {
           Comments
         </h1>
 
-        {reel.comments.length === 0 && (
-          <div className="text-center text-white font-semibold text-[20px] mt-[50px]">
-            {" "}
-            No comments Yet
-          </div>
-        )}
+        {reel.comments.length === 0 && <div className="text-center text-white font-semibold text-[20px] mt-[50px]"> No comments Yet</div>}
 
         <div className="flex flex-col justify-between h-[90%]">
           {/* Comments list area */}
@@ -245,12 +240,13 @@ const ReelCard = ({ reel }) => {
                   className="w-9 h-9 rounded-full object-cover"
                 />
                 <div>
-                  <p className="text-white text-sm break-words whitespace-pre-wrap max-w-[250px] sm:max-w-[350px] md:max-w-[400px]">
-                    <span className="font-semibold mr-1 break-keep">
-                      {comm.author.userName}
-                    </span>
-                    {comm.comment}
-                  </p>
+                 <p className="text-white text-sm break-words whitespace-pre-wrap max-w-[250px] sm:max-w-[350px] md:max-w-[400px]">
+  <span className="font-semibold mr-1 break-keep">
+    {comm.author.userName}
+  </span>
+  {comm.comment}
+</p>
+
                 </div>
               </div>
             ))}

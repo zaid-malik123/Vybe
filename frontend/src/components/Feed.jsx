@@ -8,6 +8,8 @@ import Post from "./Post";
 
 const Feed = () => {
   const {posts} = useSelector(state => state.postSlice)
+  const {user} = useSelector(state => state.userSlice)
+  const { storyList } = useSelector(state => state.storySlice)
   return (
     <div className="lg:w-[50%] w-full bg-black min-h-[100vh] lg:h-[100vh] relative lg:overflow-y-auto">
       <div className="w-full h-[100px] flex items-center justify-between p-[20px] lg:hidden">
@@ -17,7 +19,10 @@ const Feed = () => {
         </div>
       </div>
       <div className="flex w-full overflow-auto gap-[20px] items-center p-[10px]">
-        <StoryDp userName={"hello"}/>
+        <StoryDp story={user.story} userName={"Your Story"} profileImage={user.profileImage}/>
+        {storyList.map((story, idx)=>{
+           return <StoryDp key={idx} story={story} userName={story.author.userName} profileImage={story.author.profileImage}/>
+        })}
       </div>
      
      <div className="w-full min-h-[100vh] flex flex-col items-center gap-[20px] p-[10px] pt-[40px] bg-white rounded-t-[60px] relative pb-[120px]">

@@ -12,12 +12,15 @@ import Upload from "./pages/Upload";
 import getAllPost from "./hooks/getAllPost";
 import Reels from "./pages/Reels";
 import getAllReel from "./hooks/getAllReels";
+import Story from "./pages/Story";
+import getAllStory from "./hooks/getAllStory";
 
 export const serverUrl = "http://localhost:3000";
 
 const App = () => {
   getCurrentUser();
   getSuggestedUser()
+  getAllStory()
   getAllPost()
   getAllReel()
 
@@ -59,6 +62,10 @@ const App = () => {
        <Route
         path="/reels"
         element={user ? <Reels/> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/story/:userName"
+        element={user ? <Story/> : <Navigate to="/login" />}
       />
     </Routes>
   );
