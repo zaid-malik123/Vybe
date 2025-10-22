@@ -73,7 +73,6 @@ export const likeReel = async (req, res) => {
 export const commentReel = async (req, res) => {
   try {
     const { comment } = req.body;
-    console.log(comment)
     const { reelId } = req.params;
     const userId = req.userId;
 
@@ -96,7 +95,7 @@ export const commentReel = async (req, res) => {
 
     const updatedReel = await Reel.findById(reelId)
       .populate("author")
-      .populate("comments.author");
+      .populate("comments.author")
 
     return res.status(201).json(updatedReel);
   } catch (error) {
