@@ -14,6 +14,8 @@ import Reels from "./pages/Reels";
 import getAllReel from "./hooks/getAllReels";
 import Story from "./pages/Story";
 import getAllStory from "./hooks/getAllStory";
+import Message from "./pages/Message";
+import MessageArea from "./pages/MessageArea";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -66,6 +68,14 @@ const App = () => {
       <Route
         path="/story/:userName"
         element={user ? <Story/> : <Navigate to="/login" />}
+      />
+       <Route
+        path="/message"
+        element={user ? <Message/> : <Navigate to="/login" />}
+      />
+       <Route
+        path="/message-area"
+        element={user ? <MessageArea/>  : <Navigate to="/login" />}
       />
     </Routes>
   );

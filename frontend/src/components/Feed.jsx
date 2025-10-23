@@ -5,17 +5,21 @@ import StoryDp from "./StoryDp";
 import Nav from "./Nav";
 import { useSelector } from "react-redux";
 import Post from "./Post";
+import { LuSend } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
   const {posts} = useSelector(state => state.postSlice)
   const {user} = useSelector(state => state.userSlice)
+  const navigate = useNavigate()
   const { storyList, currentUserStory } = useSelector(state => state.storySlice)
   return (
     <div className="lg:w-[50%] w-full bg-black min-h-[100vh] lg:h-[100vh] relative lg:overflow-y-auto">
       <div className="w-full h-[100px] flex items-center justify-between p-[20px] lg:hidden">
         <img className="w-[80px]" src={logo} alt="" />
-        <div>
+        <div className="flex gap-[20px]">
           <FaRegHeart color="white" size={20} />
+          <LuSend onClick={()=> navigate("/message")} color="white" size={20} />
         </div>
       </div>
       <div className="flex w-full overflow-auto gap-[20px] items-center p-[10px]">
