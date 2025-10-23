@@ -69,3 +69,27 @@ export const getAllMessages = async () => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getPrevUserChats = async (req, res, next)=>{
+    try {
+        const userId = req.userId
+        const conversations = await Conversation.find({participants: userId})
+        .populate("participants").sort({updatedAt: -1})
+
+        const userMap = {}
+         conversations.forEach(conv => {
+            conv.participants.forEach(user => {
+                if(user._id != userId){
+                    userMap[user._id] = user
+                }
+            })
+         });
+
+         const previousUsers = Object.values(userMap) 
+         return res.status(200).json(previousUsers)
+
+
+    } catch (error) {
+       return res.status(500).json({ message: "Server error" });
+    }
+}
