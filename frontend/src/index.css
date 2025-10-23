@@ -39,3 +39,17 @@ body {
 .heart-animation {
   animation: heartPop 1.5s ease-out forwards;
 }
+
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
+

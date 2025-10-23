@@ -3,6 +3,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setFollowing, setUser } from "../redux/slice/userSlice";
+import { setCurrentUserStory } from "../redux/slice/storySlice";
 
 const getCurrentUser = () => {
   const dispatch = useDispatch() 
@@ -15,6 +16,7 @@ const getCurrentUser = () => {
         });
        dispatch(setUser(res.data))
        dispatch(setFollowing(res.data.following))
+       dispatch(setCurrentUserStory(res.data.story))
       } catch (error) {
         console.log(error);
       }

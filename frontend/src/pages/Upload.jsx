@@ -7,7 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../redux/slice/postSlice";
-import { setStory } from "../redux/slice/storySlice";
+import { setCurrentUserStory, setStory } from "../redux/slice/storySlice";
 import { setReels } from "../redux/slice/reelSlice";
 import Video from "../components/Video";
 import { setUser } from "../redux/slice/userSlice";
@@ -78,8 +78,8 @@ const Upload = () => {
       const res = await axios.post(`${serverUrl}/api/story/upload-story`, formData, {
         withCredentials: true,
       });
-
-      setUser(prev => ({ ...prev, story: res.data }))
+      console.log(res.data)
+      dispatch(setCurrentUserStory(res.data))
       navigate("/");
       setLoading(false);
     } catch (error) {

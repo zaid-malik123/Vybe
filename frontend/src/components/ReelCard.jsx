@@ -129,7 +129,7 @@ const ReelCard = ({ reel }) => {
   }, []);
 
   return (
-    <div className="w-full lg:w-[480px] h-screen flex items-center justify-center border-l-2 border-r-2 border-gray-800 relative overflow-hidden">
+    <div className="w-full lg:w-[480px] h-screen flex items-center justify-center border-l-2 border-r-2  relative overflow-hidden">
       {showHeart && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 heart-animation z-50">
           <FaHeart color="white" size={100} />
