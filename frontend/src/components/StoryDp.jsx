@@ -30,7 +30,7 @@ const StoryDp = ({ profileImage, userName, story }) => {
   };
 
   useEffect(() => {
-    if (story?.viewers?.some((view) => user._id === view._id)) {
+    if (story?.viewers?.some((view) => user._id.toString() === view._id.toString())) {
       setViewed(true);
     } else {
       setViewed(false);
