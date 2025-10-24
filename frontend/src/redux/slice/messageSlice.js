@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-   selectedUser: null
+   selectedUser: null,
+   messages: []
 }
 
 export const messageSlice = createSlice({
@@ -10,10 +11,13 @@ export const messageSlice = createSlice({
   reducers: {
     setSelectedUser: (state, action)=>{
         state.selectedUser = action.payload
+    },
+    setMessages: (state, action)=>{
+        state.messages = action.payload
     }
   },
 })
 
-export const { setSelectedUser } = messageSlice.actions
+export const { setSelectedUser, setMessages } = messageSlice.actions
 
 export default messageSlice.reducer

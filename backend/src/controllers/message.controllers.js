@@ -52,7 +52,7 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-export const getAllMessages = async () => {
+export const getAllMessages = async (req, res) => {
   try {
     const sender = req.userId
     const {reciever} = req.params
