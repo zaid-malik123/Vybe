@@ -3,11 +3,13 @@ import userSlice from '../slice/userSlice'
 import postSlice  from '../slice/postSlice'
 import reelSlice  from '../slice/reelSlice'
 import storySlice  from '../slice/storySlice'
+import messageSlice  from '../slice/messageSlice'
 export const store = configureStore({
   reducer: {
     userSlice: userSlice,
     postSlice: postSlice,
     reelSlice: reelSlice,
-    storySlice: storySlice
+    storySlice: storySlice,
+    messageSlice: messageSlice
   },
 })

@@ -3,7 +3,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import dp from "../assets/dp.webp";
 import StoryDp from "./StoryDp";
 import Nav from "./Nav";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Post from "./Post";
 import { LuSend } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ const Feed = () => {
   const {posts} = useSelector(state => state.postSlice)
   const {user} = useSelector(state => state.userSlice)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { storyList, currentUserStory } = useSelector(state => state.storySlice)
   return (
     <div className="lg:w-[50%] w-full bg-black min-h-[100vh] lg:h-[100vh] relative lg:overflow-y-auto">

@@ -10,6 +10,7 @@ import Nav from "../components/Nav";
 import FollowBtn from "../components/FollowBtn";
 import Post from "../components/Post";
 import { toast } from "react-toastify";
+import { setSelectedUser } from "../redux/slice/messageSlice";
 
 const Profile = () => {
   const { userName } = useParams();
@@ -152,7 +153,10 @@ const Profile = () => {
               tailwind="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white text-black cursor-pointer rounded-2xl"
               onFollowChange={handleProfile}
             />
-            <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white text-black cursor-pointer rounded-2xl">
+            <button onClick={()=> {
+              dispatch(setSelectedUser(profileData))
+              navigate("/message-area")
+            }} className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-white text-black cursor-pointer rounded-2xl">
               Message
             </button>
           </div>
