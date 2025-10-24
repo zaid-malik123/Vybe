@@ -12,8 +12,9 @@ import postRoute from "./src/routes/post.routes.js"
 import reelRoute from "./src/routes/reels.routes.js"
 import storyRoute from "./src/routes/story.routes.js"
 import messageRoute from "./src/routes/message.routes.js"
+import { app, server } from "./src/socket/socket.js";
 
-const app = express();
+
 config();
 
 // middlewares
@@ -35,7 +36,7 @@ app.use("/api/message", messageRoute)
 
 const port = process.env.PORT || 5000
 
-app.listen(port, ()=>{
+server.listen(port, ()=>{
     connectDb()
     console.log(`server is running on this ${port}`)
 })

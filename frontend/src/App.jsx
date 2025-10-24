@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -16,6 +16,9 @@ import Story from "./pages/Story";
 import getAllStory from "./hooks/getAllStory";
 import Message from "./pages/Message";
 import MessageArea from "./pages/MessageArea";
+import { useEffect } from "react";
+import { io } from "socket.io-client"
+import { setSocket } from "./redux/slice/socketSlice";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -25,8 +28,29 @@ const App = () => {
   getAllStory()
   getAllPost()
   getAllReel()
+  
 
   const { user } = useSelector((state) => state.userSlice);
+  const {socket} = useSelector(state => state.socketSlice)
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
+   if(user){
+    const socketIo = io(serverUrl, {
+      query: {userId: user._id}
+    })
+    dispatch(setSocket(socketIo))
+    return ()=> socketIo.close()
+   } 
+   else{
+    if(socket){
+      socket.close()
+      dispatch(setSocket(null))
+    }
+   }
+   
+
+  },[user])
 
   return (
     <Routes>

@@ -11,9 +11,11 @@ import { serverUrl } from "../App";
 import { setPosts } from "../redux/slice/postSlice";
 import { setUser } from "../redux/slice/userSlice";
 import FollowBtn from "./FollowBtn";
+import { useNavigate } from "react-router-dom";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { user } = useSelector((state) => state.userSlice);
   const { posts } = useSelector((state) => state.postSlice);
 
@@ -79,9 +81,9 @@ const Post = ({ post }) => {
     <div className="w-[90%] max-w-[600px] flex flex-col gap-3 bg-white items-center rounded-2xl shadow-xl shadow-[#00000025] overflow-hidden transition-all duration-300 hover:shadow-[#00000045]">
       
       {/* Header */}
-      <div className="w-full flex justify-between items-center px-4 py-3 border-b border-gray-200">
+      <div  className="w-full flex justify-between items-center px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="w-[45px] h-[45px] md:w-[55px] md:h-[55px] rounded-full overflow-hidden border border-gray-300">
+          <div onClick={()=> navigate(`/profile/${post.author.userName}`) } className="w-[45px] h-[45px] md:w-[55px] md:h-[55px] rounded-full overflow-hidden border border-gray-300">
             <img
               className="w-full h-full object-cover"
               src={post.author?.profileImage || dp}
@@ -89,10 +91,10 @@ const Post = ({ post }) => {
             />
           </div>
           <div>
-            <h1 className="font-semibold text-[15px] md:text-[16px] text-gray-800 truncate">
+            <h1 onClick={()=> navigate(`/profile/${post.author.userName}`) } className="font-semibold text-[15px] md:text-[16px] text-gray-800 truncate">
               {post.author?.userName || "User"}
             </h1>
-            <p className="text-[12px] text-gray-500">
+            <p onClick={()=> navigate(`/profile/${post.author.userName}`) } className="text-[12px] text-gray-500">
               @{post.author?.userName || post.author?.name || "user"}
             </p>
           </div>
