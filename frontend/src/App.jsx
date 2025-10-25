@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client"
 import { setOnlineUsers, setSocket } from "./redux/slice/socketSlice";
 import getCurrentUserFollowingList from "./hooks/getUserFollowing";
+import getPrevChatUser from "./hooks/getPrevChatUsers";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -27,6 +28,7 @@ const App = () => {
   getCurrentUser();
   getSuggestedUser()
   getCurrentUserFollowingList()
+  getPrevChatUser()
   getAllStory()
   getAllPost()
   getAllReel()

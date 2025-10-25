@@ -80,7 +80,7 @@ const MessageArea = () => {
       {/* Header */}
       <div className="flex items-center gap-4 px-5 py-3 fixed top-0 z-50 w-full backdrop-blur-md bg-black/50 border-b border-white/10 shadow-sm">
         <LuArrowLeft
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/message")}
           size={26}
           className="text-white cursor-pointer hover:text-gray-400 transition"
         />
