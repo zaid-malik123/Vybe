@@ -15,7 +15,6 @@ const getCurrentUser = () => {
           withCredentials: true,
         });
        dispatch(setUser(res.data))
-       dispatch(setFollowing(res.data.following))
        dispatch(setCurrentUserStory(res.data.story))
       } catch (error) {
         console.log(error);

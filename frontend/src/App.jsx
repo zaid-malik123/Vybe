@@ -18,13 +18,15 @@ import Message from "./pages/Message";
 import MessageArea from "./pages/MessageArea";
 import { useEffect } from "react";
 import { io } from "socket.io-client"
-import { setSocket } from "./redux/slice/socketSlice";
+import { setOnlineUsers, setSocket } from "./redux/slice/socketSlice";
+import getCurrentUserFollowingList from "./hooks/getUserFollowing";
 
 export const serverUrl = "http://localhost:3000";
 
 const App = () => {
   getCurrentUser();
   getSuggestedUser()
+  getCurrentUserFollowingList()
   getAllStory()
   getAllPost()
   getAllReel()
@@ -40,6 +42,11 @@ const App = () => {
       query: {userId: user._id}
     })
     dispatch(setSocket(socketIo))
+    
+    socketIo.on("onlineUsers",(users)=>{
+      dispatch(setOnlineUsers(users))
+    })
+
     return ()=> socketIo.close()
    } 
    else{

@@ -20,8 +20,11 @@ export const currUser = async (req, res, next) => {
         path: "saved",
         populate: { path: "author", select: "name userName profileImage" },
       })
-      .populate("reels");
-
+      .populate({
+        path: "reels",
+        populate: { path: "author", select: "name userName profileImage" },
+      })
+     .populate("following")
     if (!user) {
       return res.status(400).json({ message: "Unauthorized" });
     }
@@ -117,12 +120,12 @@ export const resetPassword = async (req, res) => {
 
 export const suggestedUsers = async (req, res) => {
   try {
-    const users = await User.find({ _id: { $ne: req.userId } }).select(
-      "-password"
-    ).limit(5)
+    const users = await User.find({ _id: { $ne: req.userId } })
+      .select("-password")
+      .limit(5);
     return res.status(200).json(users);
   } catch (error) {
-   return res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -256,3 +259,12 @@ export const followUser = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const followingList = async (req,res)=>{
+  try {
+    const result = await User.findById(req.userId)
+    return res.status(200).json(result.following)    
+  } catch (error) {
+    console.log(error)
+  }
+}
