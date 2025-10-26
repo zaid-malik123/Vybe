@@ -1,6 +1,7 @@
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import { uploadImage } from "../service/imageKit.service.js";
+import { io } from "../socket/socket.js";
 
 export const uploadPost = async (req, res) => {
   try {
@@ -23,7 +24,7 @@ export const uploadPost = async (req, res) => {
     user.posts.push(post._id);
     await user.save();
 
-    const populatedPost = await Post.findById(post._id).populate("author")
+    const populatedPost = await Post.findById(post._id).populate("author");
 
     return res.status(201).json(populatedPost);
   } catch (error) {
@@ -46,7 +47,7 @@ export const getAllPost = async (req, res) => {
 
 export const likePost = async (req, res) => {
   try {
-    const {postId} = req.params // frontend se postId ayega
+    const { postId } = req.params; // frontend se postId ayega
     const userId = req.userId; // middleware se logged-in user ka id
 
     const post = await Post.findById(postId);
@@ -73,6 +74,11 @@ export const likePost = async (req, res) => {
       .populate("author")
       .populate("likes");
 
+    io.emit("likePost", {
+      postId: post._id,
+      likes: post.likes,
+    });
+
     return res.status(200).json(updatedPost);
   } catch (error) {
     console.log(error);
@@ -83,7 +89,7 @@ export const likePost = async (req, res) => {
 export const commentPost = async (req, res) => {
   try {
     const { comment } = req.body;
-    console.log(req.body)
+    console.log(req.body);
     const { postId } = req.params;
     const userId = req.userId;
 
@@ -103,8 +109,14 @@ export const commentPost = async (req, res) => {
     });
     await post.save();
     const updatedPost = await Post.findById(postId)
-      .populate("author","profileImage userName name")
+      .populate("author", "profileImage userName name")
       .populate("comments.author");
+
+    io.emit("commentPost", {
+      postId: post._id,
+      comments: post.comments,
+    });
+
     return res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
@@ -115,31 +127,30 @@ export const savePost = async (req, res) => {
   try {
     const { postId } = req.params;
     const userId = req.userId;
-    
+
     const post = await Post.findById(postId);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    const user = await User.findById(userId)
-    if(!user){
-        return res.status(400).json({message: "User not found"})
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
     }
 
-    const isAlreadySaved = user?.saved.some(id => id.toString() === post._id.toString())
-    if(isAlreadySaved){
-       user.saved.pull(post._id)
+    const isAlreadySaved = user?.saved.some(
+      (id) => id.toString() === post._id.toString()
+    );
+    if (isAlreadySaved) {
+      user.saved.pull(post._id);
+    } else {
+      user.saved.push(post._id);
     }
-    else{
-      user.saved.push(post._id)
-    }
-    await user.save()
-    const updatedUser = await User.findById(userId).populate("saved") 
-    
-    return res.status(200).json(updatedUser)
+    await user.save();
+    const updatedUser = await User.findById(userId).populate("saved");
 
-
+    return res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);
   }

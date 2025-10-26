@@ -5,7 +5,7 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { MdComment } from "react-icons/md";
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { IoMdSend } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { setPosts } from "../redux/slice/postSlice";
@@ -18,6 +18,7 @@ const Post = ({ post }) => {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.userSlice);
   const { posts } = useSelector((state) => state.postSlice);
+  const { socket } = useSelector((state) => state.socketSlice);
 
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState("");
@@ -76,6 +77,26 @@ const Post = ({ post }) => {
       console.log(error);
     }
   };
+
+  useEffect(()=>{
+   socket.on("likePost",(data)=>{
+    const updatedPosts = posts.map((p) =>
+        p._id.toString() === data.postId.toString() ? {...p, likes: data.likes} : p
+      );
+     dispatch(setPosts(updatedPosts))  
+   })
+  socket.on("commentPost",(data)=>{
+    const updatedPosts = posts.map((p) =>
+        p._id.toString() === data.postId.toString() ? {...p, comments: data.comments} : p
+      );
+     dispatch(setPosts(updatedPosts))  
+   })
+
+   return ()=>{
+    socket.off("likePost")
+    socket.off("commentPost")
+   }
+  },[socket, post, dispatch])
 
   return (
     <div className="w-[90%] max-w-[600px] flex flex-col gap-3 bg-white items-center rounded-2xl shadow-xl shadow-[#00000025] overflow-hidden transition-all duration-300 hover:shadow-[#00000045]">

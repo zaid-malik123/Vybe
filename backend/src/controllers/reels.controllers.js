@@ -1,6 +1,7 @@
 import Reel from "../models/reels.model.js";
 import User from "../models/user.model.js";
 import { uploadImage } from "../service/imageKit.service.js";
+import { io } from "../socket/socket.js";
 
 // Upload Reel
 export const uploadReel = async (req, res) => {
@@ -62,6 +63,10 @@ export const likeReel = async (req, res) => {
       .populate("author")
       .populate("likes");
 
+    io.emit("likeReel", {
+      reelId: reel._id,
+      likes: reel.likes,
+    });
     return res.status(200).json(updatedReel);
   } catch (error) {
     console.log(error);
@@ -95,8 +100,12 @@ export const commentReel = async (req, res) => {
 
     const updatedReel = await Reel.findById(reelId)
       .populate("author")
-      .populate("comments.author")
-
+      .populate("comments.author");
+    
+    io.emit("commentReel", {
+      reelId: reel._id,
+      comments: reel.comments,
+    });  
     return res.status(201).json(updatedReel);
   } catch (error) {
     console.log(error);

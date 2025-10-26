@@ -17,6 +17,7 @@ const ReelCard = ({ reel }) => {
   const commentRef = useRef();
   const { user } = useSelector((state) => state.userSlice);
   const { reels } = useSelector((state) => state.reelSlice);
+  const { socket } = useSelector((state) => state.socketSlice);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isPlaying, setIsPlaying] = useState(true);
@@ -64,7 +65,6 @@ const ReelCard = ({ reel }) => {
           withCredentials: true,
         }
       );
-      console.log(res.data);
       const updatedLoop = res.data;
       const updatedLoops = reels.map((p) =>
         p._id.toString() === reel._id.toString() ? updatedLoop : p
@@ -127,6 +127,30 @@ const ReelCard = ({ reel }) => {
       if (video) observer.unobserve(video);
     };
   }, []);
+
+  useEffect(() => {
+    socket.on("likeReel", (data) => {
+      const updatedReel = reels.map((p) =>
+        p._id.toString() === data.reelId.toString()
+          ? { ...p, likes: data.likes }
+          : p
+      );
+      dispatch(setReels(updatedReel));
+    });
+    socket.on("commentReel", (data) => {
+      const updatedReel = reels.map((p) =>
+        p._id.toString() === data.reelId.toString()
+          ? { ...p, comments: data.comments }
+          : p
+      );
+      dispatch(setReels(updatedReel));
+    });
+
+    return () => {
+      socket.off("likeReel");
+      socket.off("commentReel");
+    };
+  }, [socket, reels, dispatch]);
 
   return (
     <div className="w-full lg:w-[480px] h-screen flex items-center justify-center border-l-2 border-r-2  relative overflow-hidden">
@@ -226,7 +250,12 @@ const ReelCard = ({ reel }) => {
           Comments
         </h1>
 
-        {reel.comments.length === 0 && <div className="text-center text-white font-semibold text-[20px] mt-[50px]"> No comments Yet</div>}
+        {reel.comments.length === 0 && (
+          <div className="text-center text-white font-semibold text-[20px] mt-[50px]">
+            {" "}
+            No comments Yet
+          </div>
+        )}
 
         <div className="flex flex-col justify-between h-[90%]">
           {/* Comments list area */}
@@ -240,13 +269,12 @@ const ReelCard = ({ reel }) => {
                   className="w-9 h-9 rounded-full object-cover"
                 />
                 <div>
-                 <p className="text-white text-sm break-words whitespace-pre-wrap max-w-[250px] sm:max-w-[350px] md:max-w-[400px]">
-  <span className="font-semibold mr-1 break-keep">
-    {comm.author.userName}
-  </span>
-  {comm.comment}
-</p>
-
+                  <p className="text-white text-sm break-words whitespace-pre-wrap max-w-[250px] sm:max-w-[350px] md:max-w-[400px]">
+                    <span className="font-semibold mr-1 break-keep">
+                      {comm.author.userName}
+                    </span>
+                    {comm.comment}
+                  </p>
                 </div>
               </div>
             ))}
