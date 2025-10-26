@@ -17,7 +17,6 @@ const MessageArea = () => {
   const dispatch = useDispatch();
   const imageInput = useRef();
   const scrollRef = useRef(null);
-  console.log(messages);
   const [message, setMessage] = useState("");
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);

@@ -21,6 +21,7 @@ import { io } from "socket.io-client"
 import { setOnlineUsers, setSocket } from "./redux/slice/socketSlice";
 import getCurrentUserFollowingList from "./hooks/getUserFollowing";
 import getPrevChatUser from "./hooks/getPrevChatUsers";
+import Search from "./pages/Search";
 
 export const serverUrl = "http://localhost:3000";
 
@@ -109,6 +110,10 @@ const App = () => {
        <Route
         path="/message-area"
         element={user ? <MessageArea/>  : <Navigate to="/login" />}
+      />
+       <Route
+        path="/search"
+        element={user ? <Search/>  : <Navigate to="/login" />}
       />
     </Routes>
   );

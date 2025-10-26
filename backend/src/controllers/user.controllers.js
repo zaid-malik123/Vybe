@@ -268,3 +268,25 @@ export const followingList = async (req,res)=>{
     console.log(error)
   }
 }
+
+export const search = async (req, res)=>{
+  try {
+    const {query} = req.query
+
+    if(!query){
+      return res.status(400).json({message: "Keyword is required"})
+    }
+    
+    const result = await User.find({
+      $or: [
+        {userName: {$regex: query, $options:"i"}},
+        {name: {$regex: query, $options:"i"}}
+      ]
+    }).select("-password")
+    
+    return res.status(200).json(result)
+
+  } catch (error) {
+    console.log(error)
+  }
+}

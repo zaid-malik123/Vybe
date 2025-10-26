@@ -5,6 +5,7 @@ const initialState = {
   suggestedUser: null,
   profileData: null,
   following: [],
+  searchData: null
 };
 
 export const userSlice = createSlice({
@@ -31,6 +32,9 @@ export const userSlice = createSlice({
         state.following.push(userId);
       }
     },
+    setSearchData: (state, action)=>{
+      state.searchData = action.payload
+    }
   },
 });
 
@@ -40,6 +44,7 @@ export const {
   setProfileData,
   setFollowing,
   toogleFollow,
+  setSearchData
 } = userSlice.actions;
 
 export default userSlice.reducer;

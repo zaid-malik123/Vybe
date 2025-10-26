@@ -14,7 +14,7 @@ const Nav = () => {
       <div onClick={()=> navigate("/")} className="cursor-pointer">
         <MdHomeFilled color="white" size={25} />
       </div>
-      <div className="cursor-pointer">
+      <div onClick={()=> navigate("/search")} className="cursor-pointer">
         <IoSearch color="white" size={25} />
       </div>
       <div onClick={()=> navigate("/upload")} className="cursor-pointer">
