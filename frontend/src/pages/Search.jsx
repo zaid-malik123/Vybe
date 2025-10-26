@@ -6,6 +6,7 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchData } from "../redux/slice/userSlice";
+import dp from "../assets/dp.webp";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ const Search = () => {
                 className="flex items-center gap-4 bg-[#121212] hover:bg-[#1a1a1a] transition rounded-xl px-4 py-3 cursor-pointer border border-gray-800"
               >
                 <img
-                  src={user.profileImage}
+                  src={user.profileImage || dp}
                   alt={user.userName}
                   className="w-12 h-12 rounded-full object-cover border border-gray-700"
                 />
