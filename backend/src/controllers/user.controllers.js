@@ -1,7 +1,9 @@
+import Notification from "../models/notification.model.js";
 import User from "../models/user.model.js";
 import { uploadImage } from "../service/imageKit.service.js";
 import { sendMail } from "../service/mail.service.js";
 import bcrypt from "bcrypt";
+import { getSocketId, io } from "../socket/socket.js";
 
 export const currUser = async (req, res, next) => {
   try {
@@ -24,7 +26,7 @@ export const currUser = async (req, res, next) => {
         path: "reels",
         populate: { path: "author", select: "name userName profileImage" },
       })
-     .populate("following")
+      .populate("following");
     if (!user) {
       return res.status(400).json({ message: "Unauthorized" });
     }
@@ -251,6 +253,23 @@ export const followUser = async (req, res) => {
     user.following.push(targetUser._id);
     targetUser.followers.push(user._id);
 
+    if (targetUser._id != userId) {
+      const notification = await Notification.create({
+        sender: userId,
+        reciever: targetUser._id,
+        type: "follow",
+        message: "started following you",
+      });
+
+      const populatedNotification = await Notification.findById(
+        notification._id
+      ).populate("sender reciever");
+      const recieverSocketId = getSocketId(targetUser._id);
+      if (recieverSocketId) {
+        io.to(recieverSocketId).emit("newNotification", populatedNotification);
+      }
+    }
+
     await user.save();
     await targetUser.save();
 
@@ -260,32 +279,58 @@ export const followUser = async (req, res) => {
   }
 };
 
-export const followingList = async (req,res)=>{
+export const followingList = async (req, res) => {
   try {
-    const result = await User.findById(req.userId)
-    return res.status(200).json(result.following)    
+    const result = await User.findById(req.userId);
+    return res.status(200).json(result.following);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
-export const search = async (req, res)=>{
+export const search = async (req, res) => {
   try {
-    const {query} = req.query
+    const { query } = req.query;
 
-    if(!query){
-      return res.status(400).json({message: "Keyword is required"})
+    if (!query) {
+      return res.status(400).json({ message: "Keyword is required" });
     }
-    
+
     const result = await User.find({
       $or: [
-        {userName: {$regex: query, $options:"i"}},
-        {name: {$regex: query, $options:"i"}}
-      ]
-    }).select("-password")
-    
-    return res.status(200).json(result)
+        { userName: { $regex: query, $options: "i" } },
+        { name: { $regex: query, $options: "i" } },
+      ],
+    }).select("-password");
 
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllNotification = async (req, res)=>{
+try {
+  const notification = await Notification.find({
+    reciever: req.userId
+  }).populate("sender reciever post reel")
+
+  return res.status(200).json(notification)
+} catch (error) {
+  console.log(error)
+}
+}
+
+export const markAsRead = async (req, res)=>{
+  try {
+    const {notificationId} = req.params;
+    
+    const notification = await Notification.findById(notificationId)
+
+    notification.isRead = true
+    await notification.save()
+
+    return res.status(200).json({message: "Mark as read"}) 
   } catch (error) {
     console.log(error)
   }

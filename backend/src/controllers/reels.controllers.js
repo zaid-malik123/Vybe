@@ -67,7 +67,7 @@ export const likeReel = async (req, res) => {
 
         const populatedNotification = await Notification.findById(
           notification._id
-        ).populate("sender reciever post");
+        ).populate("sender reciever reel");
         const recieverSocketId = getSocketId(reel.author._id);
         if (recieverSocketId) {
           io.to(recieverSocketId).emit(
@@ -127,7 +127,7 @@ export const commentReel = async (req, res) => {
 
       const populatedNotification = await Notification.findById(
         notification._id
-      ).populate("sender reciever post");
+      ).populate("sender reciever reel");
       const recieverSocketId = getSocketId(reel.author._id);
       if (recieverSocketId) {
         io.to(recieverSocketId).emit("newNotification", populatedNotification);

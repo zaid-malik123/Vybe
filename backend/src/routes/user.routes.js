@@ -2,7 +2,7 @@ import express from "express"
 import { isAuth } from "../middleware/isAuth.js";
 import multer from "multer"
 const upload = multer({storage: multer.memoryStorage()});
-import { currUser, editProfile, followingList, followUser, getUserProfile, resetPassword, search, sendOtp, suggestedUsers, verifyOtp } from "../controllers/user.controllers.js";
+import { currUser, editProfile, followingList, followUser, getAllNotification, getUserProfile, markAsRead, resetPassword, search, sendOtp, suggestedUsers, verifyOtp } from "../controllers/user.controllers.js";
 const router = express.Router();
 
 router.get("/curr-user", isAuth, currUser)
@@ -24,5 +24,9 @@ router.get("/follow-user/:targetUserId", isAuth, followUser)
 router.get("/following", isAuth, followingList)
 
 router.get("/search", isAuth, search)
+
+router.get("/notification", isAuth, getAllNotification)
+
+router.get("/markAsRead/:notificationId", isAuth, markAsRead)
 
 export default router;
