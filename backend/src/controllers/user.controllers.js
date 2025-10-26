@@ -313,7 +313,7 @@ export const getAllNotification = async (req, res)=>{
 try {
   const notification = await Notification.find({
     reciever: req.userId
-  }).populate("sender reciever post reel")
+  }).populate("sender reciever post reel").sort({createdAt:-1})
 
   return res.status(200).json(notification)
 } catch (error) {
@@ -323,13 +323,22 @@ try {
 
 export const markAsRead = async (req, res)=>{
   try {
-    const {notificationId} = req.params;
+    const {notificationId} = req.body;
     
     const notification = await Notification.findById(notificationId)
 
-    notification.isRead = true
-    await notification.save()
-
+    if(Array.isArray(notificationId)){
+      await Notification.updateMany(
+        {_id: {$in: notificationId}, reciever: req.userId},
+        {$set: {isRead: true}}
+      )
+    }
+    else{
+      await Notification.findOneAndUpdate(
+        {_id: notificationId, reciever: req.userId},
+        {$set: {isRead: true}}
+      )
+    }
     return res.status(200).json({message: "Mark as read"}) 
   } catch (error) {
     console.log(error)

@@ -24,6 +24,7 @@ import getPrevChatUser from "./hooks/getPrevChatUsers";
 import Search from "./pages/Search";
 import getAllNotification from "./hooks/getAllNotification";
 import Notification from "./pages/Notification";
+import { setNotificationData } from "./redux/slice/notificationSlice";
 
 
 export const serverUrl = "http://localhost:3000";
@@ -40,6 +41,7 @@ const App = () => {
 
   const { user } = useSelector((state) => state.userSlice);
   const {socket} = useSelector(state => state.socketSlice)
+  const {notificationData} = useSelector(state => state.notificationSlice)
   const dispatch = useDispatch()
 
   useEffect(()=>{
@@ -64,6 +66,15 @@ const App = () => {
    
 
   },[user])
+
+  useEffect(()=>{
+    socket?.on("newNotification",(noti)=>{
+      dispatch(setNotificationData([...notificationData, noti]))
+    })
+    return ()=>{
+      socket?.off("newNotification")
+    }
+  },[socket, dispatch, notificationData])
 
   return (
     <Routes>

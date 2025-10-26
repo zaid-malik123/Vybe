@@ -27,6 +27,6 @@ router.get("/search", isAuth, search)
 
 router.get("/notification", isAuth, getAllNotification)
 
-router.get("/markAsRead/:notificationId", isAuth, markAsRead)
+router.post("/markAsRead", isAuth, markAsRead)
 
 export default router;

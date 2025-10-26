@@ -79,7 +79,7 @@ const Post = ({ post }) => {
   };
 
   useEffect(()=>{
-   socket.on("likePost",(data)=>{
+   socket?.on("likePost",(data)=>{
     const updatedPosts = posts.map((p) =>
         p._id.toString() === data.postId.toString() ? {...p, likes: data.likes} : p
       );

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-   notificationData: null
+   notificationData: []
 }
 
 export const notificationSlice = createSlice({

@@ -242,67 +242,66 @@ const ReelCard = ({ reel }) => {
       {/* Comment */}
       <div
         ref={commentRef}
-        className={`absolute z-[100] bottom-0 w-full h-[500px] p-[10px] rounded-t-4xl bg-[#0e1718] transition-transform duration-500 ease-in-out left-0 shadow-2xl shadow-black ${
+        className={`absolute z-[999] bottom-0 w-full h-[500px] p-[10px] rounded-t-4xl bg-[#0e1718] transition-transform duration-500 ease-in-out left-0 shadow-2xl shadow-black ${
           showComment ? "translate-y-0" : "translate-y-[100%]"
         }`}
       >
-        <h1 className="text-white text-[20px] text-center font-semibold mb-3">
-          Comments
-        </h1>
+        <div className="flex justify-between items-center mb-3">
+          <h1 className="text-white text-[20px] text-center font-semibold flex-1">
+            Comments
+          </h1>
+          <RxCross1
+            onClick={() => setShowComment(false)}
+            className="text-white cursor-pointer"
+          />
+        </div>
 
-        {reel.comments.length === 0 && (
-          <div className="text-center text-white font-semibold text-[20px] mt-[50px]">
-            {" "}
-            No comments Yet
-          </div>
-        )}
+        {/* Comments List */}
+        <div className="overflow-y-auto h-[380px] space-y-4 px-1">
+          {reel.comments.length === 0 && (
+            <div className="text-center text-white font-semibold text-[16px] mt-[30px]">
+              No comments yet
+            </div>
+          )}
+          {reel.comments.map((comm, idx) => (
+            <div key={idx} className="flex items-start space-x-3">
+              <img
+                src={comm.author.profileImage || dp}
+                alt="user"
+                className="w-9 h-9 rounded-full object-cover"
+              />
+              <p className="text-white text-sm break-words whitespace-pre-wrap max-w-[250px] sm:max-w-[350px] md:max-w-[400px]">
+                <span className="font-semibold mr-1">
+                  {comm.author.userName}
+                </span>
+                {comm.comment}
+              </p>
+            </div>
+          ))}
+        </div>
 
-        <div className="flex flex-col justify-between h-[90%]">
-          {/* Comments list area */}
-          <div className="overflow-y-auto p-2 space-y-4">
-            {/* Example comment */}
-            {reel.comments.map((comm, idx) => (
-              <div className="flex items-start space-x-3">
-                <img
-                  src={comm.author.profileImage || dp}
-                  alt="user"
-                  className="w-9 h-9 rounded-full object-cover"
-                />
-                <div>
-                  <p className="text-white text-sm break-words whitespace-pre-wrap max-w-[250px] sm:max-w-[350px] md:max-w-[400px]">
-                    <span className="font-semibold mr-1 break-keep">
-                      {comm.author.userName}
-                    </span>
-                    {comm.comment}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Input box */}
-          <div className="flex items-center bg-[#1a2526] rounded-full px-3 py-2 mt-3">
-            <img
-              src={user.profileImage || dp}
-              alt="profile"
-              className="w-8 h-8 rounded-full object-cover mr-3"
-            />
-            <input
-              onChange={(e) => setComment(e.target.value)}
-              value={comment}
-              type="text"
-              placeholder="Add a comment..."
-              className="flex-1 bg-transparent text-white text-sm placeholder-gray-400 outline-none"
-            />
-            {comment && (
-              <button
-                onClick={handleComment}
-                className="text-[#0095f6] font-semibold text-sm hover:opacity-80 transition"
-              >
-                Post
-              </button>
-            )}
-          </div>
+        {/* Input Box — fixed bottom */}
+        <div className="absolute bottom-0 left-0 w-full bg-[#1a2526] flex items-center rounded-t-xl px-3 py-2 border-t border-gray-700">
+          <img
+            src={user.profileImage || dp}
+            alt="profile"
+            className="w-8 h-8 rounded-full object-cover mr-3"
+          />
+          <input
+            onChange={(e) => setComment(e.target.value)}
+            value={comment}
+            type="text"
+            placeholder="Add a comment..."
+            className="flex-1 bg-transparent text-white text-sm placeholder-gray-400 outline-none"
+          />
+          {comment && (
+            <button
+              onClick={handleComment}
+              className="text-[#0095f6] font-semibold text-sm hover:opacity-80 transition"
+            >
+              Post
+            </button>
+          )}
         </div>
       </div>
     </div>
