@@ -22,6 +22,9 @@ import { setOnlineUsers, setSocket } from "./redux/slice/socketSlice";
 import getCurrentUserFollowingList from "./hooks/getUserFollowing";
 import getPrevChatUser from "./hooks/getPrevChatUsers";
 import Search from "./pages/Search";
+import getAllNotification from "./hooks/getAllNotification";
+import Notification from "./pages/Notification";
+
 
 export const serverUrl = "http://localhost:3000";
 
@@ -33,7 +36,7 @@ const App = () => {
   getAllStory()
   getAllPost()
   getAllReel()
-  
+  getAllNotification()
 
   const { user } = useSelector((state) => state.userSlice);
   const {socket} = useSelector(state => state.socketSlice)
@@ -114,6 +117,10 @@ const App = () => {
        <Route
         path="/search"
         element={user ? <Search/>  : <Navigate to="/login" />}
+      />
+      <Route
+        path="/notification"
+        element={user ? <Notification/>  : <Navigate to="/login" />}
       />
     </Routes>
   );

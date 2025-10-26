@@ -12,6 +12,7 @@ const LeftHome = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, suggestedUser } = useSelector((state) => state.userSlice);
+  const { notificationData } = useSelector((state) => state.notificationSlice);
 
   const handleLogout = async () => {
     try {
@@ -30,8 +31,12 @@ const LeftHome = () => {
     <div className="w-[25%] hidden lg:block min-h-[100vh] bg-[black] border-r-2 border-gray-900">
       <div className="w-full h-[100px] flex items-center justify-between p-[20px]">
         <img className="w-[80px]" src={logo} alt="" />
-        <div>
+        <div onClick={() => navigate("/notification")} className="relative">
           <FaRegHeart color="white" size={20} />
+          {notificationData &&
+            notificationData.some((noti) => noti.isRead == false) && (
+              <div className="w-[10px] h-[10px] bg-blue-600 rounded-full absolute top-0 right-[-5px]"></div>
+            )}
         </div>
       </div>
 
@@ -65,9 +70,10 @@ const LeftHome = () => {
 
       <div className="w-full flex flex-col gap-[20px] p-[20px]">
         <h1 className="text-[white] text-[19px]">Suggested User</h1>
-        {suggestedUser && suggestedUser?.slice(0,3).map((user, idx)=>(
-          <OtherUser key={idx} otherUser={user}/>
-        ))}
+        {suggestedUser &&
+          suggestedUser
+            ?.slice(0, 3)
+            .map((user, idx) => <OtherUser key={idx} otherUser={user} />)}
       </div>
     </div>
   );
