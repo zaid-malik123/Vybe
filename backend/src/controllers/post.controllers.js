@@ -1,7 +1,8 @@
+import Notification from "../models/notification.model.js";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import { uploadImage } from "../service/imageKit.service.js";
-import { io } from "../socket/socket.js";
+import { getSocketId, io } from "../socket/socket.js";
 
 export const uploadPost = async (req, res) => {
   try {
@@ -65,6 +66,22 @@ export const likePost = async (req, res) => {
     } else {
       // Like
       post.likes.push(userId);
+      if(post.author._id != userId){
+        const notification = await Notification.create({
+          sender: userId,
+          reciever: post.author._id,
+          type: "like",
+          post: post._id,
+          message: "liked your post"
+        })
+
+        const populatedNotification = await Notification.findById(notification._id)
+        .populate("sender reciever post")
+        const recieverSocketId = getSocketId(post.author._id)
+        if(recieverSocketId){
+          io.to(recieverSocketId).emit("newNotification", populatedNotification)
+        }
+      }
     }
 
     await post.save();
@@ -107,6 +124,22 @@ export const commentPost = async (req, res) => {
       author: userId,
       comment,
     });
+    if(post.author._id != userId){
+        const notification = await Notification.create({
+          sender: userId,
+          reciever: post.author._id,
+          type: "comment",
+          post: post._id,
+          message: "comment your post"
+        })
+
+        const populatedNotification = await Notification.findById(notification._id)
+        .populate("sender reciever post")
+        const recieverSocketId = getSocketId(post.author._id)
+        if(recieverSocketId){
+          io.to(recieverSocketId).emit("newNotification", populatedNotification)
+        }
+      }
     await post.save();
     const updatedPost = await Post.findById(postId)
       .populate("author", "profileImage userName name")

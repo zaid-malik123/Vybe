@@ -1,7 +1,8 @@
+import Notification from "../models/notification.model.js";
 import Reel from "../models/reels.model.js";
 import User from "../models/user.model.js";
 import { uploadImage } from "../service/imageKit.service.js";
-import { io } from "../socket/socket.js";
+import { getSocketId, io } from "../socket/socket.js";
 
 // Upload Reel
 export const uploadReel = async (req, res) => {
@@ -54,7 +55,27 @@ export const likeReel = async (req, res) => {
     if (isLiked) {
       reel.likes.pull(userId); // unlike
     } else {
-      reel.likes.push(userId); // like
+      reel.likes.push(userId);
+      if (reel.author._id != userId) {
+        const notification = await Notification.create({
+          sender: userId,
+          reciever: reel.author._id,
+          type: "like",
+          post: reel._id,
+          message: "liked your reel",
+        });
+
+        const populatedNotification = await Notification.findById(
+          notification._id
+        ).populate("sender reciever post");
+        const recieverSocketId = getSocketId(reel.author._id);
+        if (recieverSocketId) {
+          io.to(recieverSocketId).emit(
+            "newNotification",
+            populatedNotification
+          );
+        }
+      }
     }
 
     await reel.save();
@@ -95,17 +116,34 @@ export const commentReel = async (req, res) => {
       author: userId,
       comment,
     });
+    if (reel.author._id != userId) {
+      const notification = await Notification.create({
+        sender: userId,
+        reciever: reel.author._id,
+        type: "comment",
+        post: reel._id,
+        message: "comment your reel",
+      });
+
+      const populatedNotification = await Notification.findById(
+        notification._id
+      ).populate("sender reciever post");
+      const recieverSocketId = getSocketId(reel.author._id);
+      if (recieverSocketId) {
+        io.to(recieverSocketId).emit("newNotification", populatedNotification);
+      }
+    }
 
     await reel.save();
 
     const updatedReel = await Reel.findById(reelId)
       .populate("author")
       .populate("comments.author");
-    
+
     io.emit("commentReel", {
       reelId: reel._id,
       comments: reel.comments,
-    });  
+    });
     return res.status(201).json(updatedReel);
   } catch (error) {
     console.log(error);
