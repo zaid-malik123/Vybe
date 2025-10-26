@@ -12,15 +12,15 @@ import { setMessages } from "../redux/slice/messageSlice";
 
 const MessageArea = () => {
   const { selectedUser, messages } = useSelector((state) => state.messageSlice);
+  const { socket } = useSelector((state) => state.socketSlice);
   const { user } = useSelector((state) => state.userSlice);
   const dispatch = useDispatch();
   const imageInput = useRef();
   const scrollRef = useRef(null);
-
+  console.log(messages);
   const [message, setMessage] = useState("");
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
-
   const navigate = useNavigate();
 
   const handleImage = (e) => {
@@ -47,33 +47,62 @@ const MessageArea = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+      console.log(res.data);
       dispatch(setMessages([...messages, res.data]));
       setMessage("");
       setFrontendImage(null);
       setBackendImage(null);
       imageInput.current.value = null;
-
-      // Scroll to bottom after sending
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    handleAllMessages().then(() => {
       setTimeout(() => {
-        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-      }, 100);
+        scrollRef.current?.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "auto",
+        });
+      }, 300);
+    });
+  }, [selectedUser]);
+
+  // Jab bhi messages update honge to auto scroll karega
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth", // smooth scroll effect
+      });
+    }
+  }, [messages]);
+
+  const handleAllMessages = async () => {
+    try {
+      const res = await axios.get(
+        `${serverUrl}/api/message/all-message/${selectedUser._id}`,
+        { withCredentials: true }
+      );
+      dispatch(setMessages(res.data));
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleAllMessages = async ()=>{
-   try {
-    const res = await axios.get(`${serverUrl}/api/message/all-message/${selectedUser._id}`,{withCredentials:true})
-    dispatch(setMessages(res.data))
-   } catch (error) {
-    console.log(error)
-   }
-  }
+  useEffect(() => {
+    handleAllMessages();
+  }, [selectedUser]);
 
-  useEffect(()=>{
-    handleAllMessages()
-  },[selectedUser])
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("newMsg", (mess) => {
+      dispatch(setMessages([...messages, mess]));
+    });
+
+    return () => socket.off("newMsg");
+  }, [socket, dispatch, messages]);
 
   return (
     <div className="w-full h-screen bg-gradient-to-b from-[#050505] to-[#0f0f0f] relative flex flex-col">
@@ -98,7 +127,9 @@ const MessageArea = () => {
         </div>
 
         <div className="text-white">
-          <div className="text-[16px] font-semibold">{selectedUser.userName}</div>
+          <div className="text-[16px] font-semibold">
+            {selectedUser.userName}
+          </div>
           <div className="text-[13px] text-gray-400">{selectedUser.name}</div>
         </div>
       </div>
@@ -116,12 +147,15 @@ const MessageArea = () => {
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-5 pt-[80px] pb-[100px] flex flex-col gap-6 bg-black scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent"
-      > 
-      {messages && messages.map((mess, idx)=>(
-       mess.sender == user._id ? <SenderMessage key={idx} message={mess} /> : <RecieverMessage key={idx} message={mess} />
-      ))}
-        
-        
+      >
+        {Array.isArray(messages) &&
+          messages.map((mess, idx) =>
+            mess.sender === user._id ? (
+              <SenderMessage key={idx} message={mess} />
+            ) : (
+              <RecieverMessage key={idx} message={mess} />
+            )
+          )}
       </div>
 
       {/* Message Input */}

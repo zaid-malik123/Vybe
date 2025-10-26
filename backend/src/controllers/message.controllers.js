@@ -1,6 +1,7 @@
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
 import { uploadImage } from "../service/imageKit.service.js";
+import { getSocketId, io } from "../socket/socket.js";
 
 export const sendMessage = async (req, res) => {
   try {
@@ -28,7 +29,6 @@ export const sendMessage = async (req, res) => {
       message,
       image: image || undefined,
     });
-
     // Find existing conversation
     let conversation = await Conversation.findOne({
       participants: { $all: [sender, reciever] },
@@ -46,6 +46,12 @@ export const sendMessage = async (req, res) => {
       await conversation.save();
     }
 
+    const recieverSocketId = getSocketId(reciever);
+    if (recieverSocketId) {
+      io.to(recieverSocketId).emit("newMsg", newMessage);
+    } else {
+      console.log("⚠️ Receiver not connected or socket missing");
+    }
     return res.status(201).json(newMessage);
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
@@ -54,42 +60,40 @@ export const sendMessage = async (req, res) => {
 
 export const getAllMessages = async (req, res) => {
   try {
-    const sender = req.userId
-    const {reciever} = req.params
+    const sender = req.userId;
+    const { reciever } = req.params;
     let conversation = await Conversation.findOne({
       participants: { $all: [sender, reciever] },
-    }).populate("messages")
+    }).populate("messages");
 
-    if(!conversation){
-        return res.status(400).json({message: "conversation not found"})
+    if (!conversation) {
+      return res.status(400).json({ message: "conversation not found" });
     }
-    return res.status(200).json(conversation.messages)
-
+    return res.status(200).json(conversation.messages);
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }
 };
 
-export const getPrevUserChats = async (req, res, next)=>{
-    try {
-        const userId = req.userId
-        const conversations = await Conversation.find({participants: userId})
-        .populate("participants").sort({updatedAt: -1})
+export const getPrevUserChats = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const conversations = await Conversation.find({ participants: userId })
+      .populate("participants")
+      .sort({ updatedAt: -1 });
 
-        const userMap = {}
-         conversations.forEach(conv => {
-            conv.participants.forEach(user => {
-                if(user._id != userId){
-                    userMap[user._id] = user
-                }
-            })
-         });
+    const userMap = {};
+    conversations.forEach((conv) => {
+      conv.participants.forEach((user) => {
+        if (user._id != userId) {
+          userMap[user._id] = user;
+        }
+      });
+    });
 
-         const previousUsers = Object.values(userMap) 
-         return res.status(200).json(previousUsers)
-
-
-    } catch (error) {
-       return res.status(500).json({ message: "Server error" });
-    }
-}
+    const previousUsers = Object.values(userMap);
+    return res.status(200).json(previousUsers);
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
+};
