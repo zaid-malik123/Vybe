@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 app.use(cors({
-    origin: "https://vybe-1-xybo.onrender.com",
+    origin: "https://vybe-0.onrender.com",
     credentials: true
 }))
 

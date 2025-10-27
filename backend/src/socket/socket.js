@@ -7,7 +7,7 @@ export const server = http.createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin: "https://vybe-1-xybo.onrender.com",
+    origin: "https://vybe-0.onrender.com",
     credentials: true,
   },
 });
