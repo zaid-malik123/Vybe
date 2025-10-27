@@ -163,7 +163,6 @@ const ReelCard = ({ reel }) => {
         onDoubleClick={handleLikeOnDoubleClick}
         autoPlay
         loop
-        muted
         className="w-full h-[100vh] object-cover"
         ref={videoRef}
         src={reel.media}
