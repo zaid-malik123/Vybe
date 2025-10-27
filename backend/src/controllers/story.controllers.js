@@ -111,3 +111,19 @@ export const getAllStory = async (req, res) => {
     console.log(error);
   }
 };
+
+export const deleteStory = async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+    console.log("This id comes in frontend :-", req.params.id)
+    if (!story) return res.status(404).json({ message: "Story not found" });
+
+    if (story.author.toString() !== req.userId)
+      return res.status(403).json({ message: "Not authorized" });
+
+    await story.deleteOne();
+    res.json({ message: "Story deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting story", error });
+  }
+};

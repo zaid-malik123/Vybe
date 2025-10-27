@@ -2,7 +2,7 @@ import express from "express"
 import { isAuth } from "../middleware/isAuth.js"
 const router = express.Router()
 import multer from "multer"
-import { createStory, getAllStory, getStoryByUsername, viewStory } from "../controllers/story.controllers.js";
+import { createStory, deleteStory, getAllStory, getStoryByUsername, viewStory } from "../controllers/story.controllers.js";
 const upload = multer({storage: multer.memoryStorage()});
 
 
@@ -15,6 +15,7 @@ router.get("/getStoryByUsername/:userName", isAuth, getStoryByUsername)
 
 router.get("/all-story", isAuth, getAllStory)
 
+router.delete("/story/:id", isAuth, deleteStory)
 
 
 export default router
