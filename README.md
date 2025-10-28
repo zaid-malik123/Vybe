@@ -1,99 +1,130 @@
-🌟 Vybe — Social Media Web App
+<h1 align="center">🌟 Vybe — Social Media Web App</h1>
 
-Vybe is a full-stack social media application inspired by Instagram, featuring reels, stories, chat, likes, comments, and more — all in real time!
-Built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and powered by Socket.IO for live interactions.
+<p align="center">
+  <b>Vybe is a modern, full-stack social media platform inspired by Instagram — featuring Reels, Stories, Real-Time Chat, Likes, Comments, and more — all powered by the MERN stack.</b><br/>
+  Enjoy seamless real-time interactions, instant messaging, and media sharing with a beautiful, responsive UI.
+</p>
 
-🚀 Features
+---
 
-✅ Reels Feature (Upload & View Short Videos)
-Create and watch short video clips just like Instagram Reels.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.0-blue?logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-Express-green?logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/MongoDB-Atlas-success?logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Socket.IO-Realtime-black?logo=socket.io&logoColor=white" alt="Socket.IO" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License: MIT" />
+</p>
 
-✅ Real-time Chat with Socket.IO
-Instant messaging with live updates and online status.
+---
 
-✅ Stories Like Instagram
-Share disappearing photos and videos that auto-expire after 24 hours.
+## ✨ Features
 
-✅ Authentication System
-Secure sign-up, login, and JWT-based session handling.
+- 🎬 **Reels Feature** — Upload and view short videos, just like Instagram Reels  
+- 💬 **Real-Time Chat** — Live one-on-one messaging powered by Socket.IO  
+- 📸 **Stories System** — Share disappearing photos and videos for 24 hours  
+- ❤️ **Likes, Comments & Follows** — Interact and engage with other users  
+- 🔐 **JWT Authentication** — Secure login, signup, and session handling  
+- 📱 **Responsive Design** — Fully optimized for all devices  
+- ☁️ **Cloud Media Storage** — Seamless upload and management of user content  
+- ⚡ **Hosted & Live** — Access it anytime, anywhere!
 
-✅ Like, Comment, Follow System
-Engage with posts and connect with other users easily.
+---
 
-✅ Mobile Responsive Design
-Optimized for all devices — phones, tablets, and desktops.
+## 🧩 Tech Stack
 
-✅ Hosted & Deployed Live!
-Accessible anytime, anywhere.
+| Category | Technologies |
+|-----------|--------------|
+| **Frontend** | React.js, Redux Toolkit, Tailwind CSS, Axios, React Router |
+| **Backend** | Node.js, Express.js, MongoDB, Mongoose |
+| **Real-Time Communication** | Socket.IO |
+| **Authentication** | JWT (JSON Web Token) |
+| **Cloud Storage** | ImageKit / Cloudinary / Firebase |
+| **Hosting** | Render (Backend), Vercel (Frontend), MongoDB Atlas |
 
-🧠 Tech Stack
+---
 
-Frontend: React.js, Redux Toolkit, Tailwind CSS, Axios, React Router
-Backend: Node.js, Express.js, MongoDB, Mongoose
-Real-time Communication: Socket.IO
-Authentication: JWT (JSON Web Token)
-Cloud Storage: (e.g., ImageKit / Cloudinary / Firebase — whichever you used)
-Hosting: (e.g., Vercel for frontend, Render/Express backend, MongoDB Atlas)
+## ⚙️ Installation & Setup
 
-📸 Screenshots
+### 🪄 Prerequisites
+Ensure you have:
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- NPM or Yarn installed
 
-Add a few screenshots or GIFs of your app here (Home page, Reels, Chat, Stories, etc.)
-You can use Markdown image syntax like:
+---
 
-![Vybe Home](./screenshots/home.png)
-![Vybe Chat](./screenshots/chat.png)
+### 🖥️ Frontend Setup
 
-⚙️ Installation & Setup
-
-Follow these steps to run Vybe locally:
-
+```bash
 # Clone the repository
-git clone https://github.com/your-username/vybe.git
+git clone https://github.com/zaid-malik123/Vybe.git
+cd client
 
-# Go into the project folder
-cd vybe
+# Install dependencies
+npm install
+▶️ Start the Development Server
 
-# Install dependencies for frontend and backend
-cd client && npm install
-cd ../server && npm install
-
-# Create a .env file in the server folder
-# Add your environment variables (Mongo URI, JWT secret, etc.)
-
-# Run the backend
 npm run dev
 
-# Run the frontend (in another terminal)
-npm start
+
+Your frontend will run at:
+👉 http://localhost:5173
+
+🧠 Backend Setup
+# Navigate to backend folder
+cd ../server
+
+# Install dependencies
+npm install
 
 
-The app will run on:
-Frontend: http://localhost:3000
+🔧 Environment Variables
 
-Backend: http://localhost:5000
+Create a .env file inside the server directory and add:
 
-🌐 Live Demo
+PORT=5000
+MONGO_URI=""
+JWT_SECRET=""
+IMAGEKIT_PUBLIC_KEY=""
+IMAGEKIT_PRIVATE_KEY=""
+IMAGEKIT_URL_ENDPOINT=""
 
-🔗 Live Website: https://your-live-site-link.com
 
-🔗 Backend API: https://your-backend-link.com
+▶️ Start the Backend Server
+
+npm run dev
+
+
+Your backend will run at:
+👉 http://localhost:5000
+
+🔗 Links
+
+🧑‍💻 GitHub Repository: https://github.com/zaid-malik123/Vybe
+
+🌐 Live Demo: https://vybe-1-xybo.onrender.com/
+
+💡 Future Improvements
+
+🚀 Notifications & Activity Feed
+🎞️ Video Compression & Upload Progress Bar
+🌙 Dark Mode
+⚙️ Performance and Scalability Enhancements
 
 🧑‍💻 Author
 
 👤 Zaid Malik
-💼 GitHub
- | 💬 LinkedIn
+🔗 GitHub
 
-💡 Future Improvements
+💼 LinkedIn
+ (Add your LinkedIn link here)
 
-Add notifications and activity feed
+📜 License
 
-Add video compression & progress bar for uploads
-
-Integrate dark mode
-
-Improve performance and scalability
+This project is licensed under the MIT License — see the LICENSE file for details.
 
 ⭐ Show Your Support
 
-If you like this project, please ⭐ the repo and share it with others!
+If you like Vybe, please ⭐ the repository and share it with others!
+Your support motivates me to build even better projects ❤️
+
+<p align="center"> Made with ❤️ by <b>Zaid Malik</b> </p> ```
